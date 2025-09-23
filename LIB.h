@@ -5,9 +5,11 @@
 #include <string>
 #include <iomanip>
 #include <iostream>
+#include <sstream>
+#include <cmath>
 
 using namespace std;
 
-int Convert_to_ASCII(string str);
+long int Convert_to_ASCII(string str);
 
 #endif
