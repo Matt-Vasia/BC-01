@@ -10,6 +10,6 @@
 
 using namespace std;
 
-long int Convert_to_ASCII(string str);
+long int Convert_to_ASCII(string& str);
 
 #endif
