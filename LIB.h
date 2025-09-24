@@ -12,4 +12,6 @@ using namespace std;
 
 long int Convert_to_ASCII(string& str);
 
+string SqrtToString(const string& input);
+
 #endif
