@@ -39,3 +39,17 @@ string SqrtToString(const string& input) {
     oss << setprecision(20) << fixed << value;
     return oss.str();
 }
+
+string ReadFromFile(){
+    cout<<"Empty 1"<<endl;
+    cout<<"Char 2"<<endl;
+    cout<<"Random 3"<<endl;
+    cout<<"Random similar 4"<<endl;
+    cout<<"Konstitucija 5"<<endl;
+
+    string input;
+    do{
+        cin>>input;
+    }
+    while(input != "1" || input != "2" || input != "3" || input != "4" || input != "5");
+}
