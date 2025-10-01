@@ -72,27 +72,51 @@ void ReadFromFile()
         cin >> input;
     } while (input != "1" && input != "2" && input != "3" && input != "4" && input != "5");
 
+    {
+        string warmupInput = "warmup";
+        SqrtToString(warmupInput); // Call function to trigger JIT compilation/caching
+        
+        // Additional warm-up calls to ensure system is fully ready
+        for (int i = 0; i < 5; i++) {
+            SqrtToString("warmup" + to_string(i));
+        }
+    }
 
     if (input == "1")
     {
-        auto start = chrono::high_resolution_clock::now();
-        string hash = SqrtToString("");
-        auto end = chrono::high_resolution_clock::now();
-        cout << hash << " " << chrono::duration_cast<chrono::duration<double>>(end - start).count() << " s" << endl;
+        const int NUM_RUNS = 10;
+        double total_duration = 0.0;
+        string hash;
+        for (int i = 0; i < NUM_RUNS; ++i)
+        {
+            auto start = chrono::high_resolution_clock::now();
+            hash = SqrtToString("");
+            auto end = chrono::high_resolution_clock::now();
+            total_duration += chrono::duration_cast<chrono::duration<double>>(end - start).count();
+        }
+        cout << hash << " " << fixed << setprecision(7) << total_duration / NUM_RUNS << " s" << endl;
     }
     if (input == "2")
     {
+        const int NUM_RUNS = 10;
         vector<string> data = {"a", "b", "c"};
-        for (const string sample : data)
+        for (const string &sample : data)
         {
-            auto start = chrono::high_resolution_clock::now();
-            string hash = SqrtToString(sample);
-            auto end = chrono::high_resolution_clock::now();
-            cout << hash << " " << chrono::duration_cast<chrono::duration<double>>(end - start).count() << " s" << endl;
+            double total_duration = 0.0;
+            string hash;
+            for (int i = 0; i < NUM_RUNS; ++i)
+            {
+                auto start = chrono::high_resolution_clock::now();
+                hash = SqrtToString(sample);
+                auto end = chrono::high_resolution_clock::now();
+                total_duration += chrono::duration_cast<chrono::duration<double>>(end - start).count();
+            }
+            cout << hash << " " << fixed << setprecision(7) << total_duration / NUM_RUNS << " s" << endl;
         }
     }
     if (input == "3")
     {
+        const int NUM_RUNS = 10;
         vector<string> files = {"test_files/random3000_1.txt", "test_files/random3000_2.txt", "test_files/random3000_3.txt"};
         for (const auto &filename : files)
         {
@@ -102,11 +126,18 @@ void ReadFromFile()
                 stringstream buffer;
                 buffer << file.rdbuf();
                 string content = buffer.str();
-                auto start = chrono::high_resolution_clock::now();
-                string hash = SqrtToString(content);
-                auto end = chrono::high_resolution_clock::now();
                 file.close();
-                cout << hash << " " << chrono::duration_cast<chrono::duration<double>>(end - start).count() << " s" << endl;
+
+                double total_duration = 0.0;
+                string hash;
+                for (int i = 0; i < NUM_RUNS; ++i)
+                {
+                    auto start = chrono::high_resolution_clock::now();
+                    hash = SqrtToString(content);
+                    auto end = chrono::high_resolution_clock::now();
+                    total_duration += chrono::duration_cast<chrono::duration<double>>(end - start).count();
+                }
+                cout << hash << " " << fixed << setprecision(7) << total_duration / NUM_RUNS << " s" << endl;
             }
             else
             {
@@ -116,6 +147,7 @@ void ReadFromFile()
     }
     if (input == "4")
     {
+        const int NUM_RUNS = 10;
         vector<string> files = {"test_files/random3000_similar_1.txt", "test_files/random3000_similar_2.txt", "test_files/random3000_similar_3.txt"};
         for (const auto &filename : files)
         {
@@ -125,11 +157,18 @@ void ReadFromFile()
                 stringstream buffer;
                 buffer << file.rdbuf();
                 string content = buffer.str();
-                auto start = chrono::high_resolution_clock::now();
-                string hash = SqrtToString(content);
-                auto end = chrono::high_resolution_clock::now();
                 file.close();
-                cout << hash << " " << chrono::duration_cast<chrono::duration<double>>(end - start).count() << " s" << endl;
+
+                double total_duration = 0.0;
+                string hash;
+                for (int i = 0; i < NUM_RUNS; ++i)
+                {
+                    auto start = chrono::high_resolution_clock::now();
+                    hash = SqrtToString(content);
+                    auto end = chrono::high_resolution_clock::now();
+                    total_duration += chrono::duration_cast<chrono::duration<double>>(end - start).count();
+                }
+                cout << hash << " " << fixed << setprecision(7) << total_duration / NUM_RUNS << " s" << endl;
             }
             else
             {
@@ -139,17 +178,25 @@ void ReadFromFile()
     }
     if (input == "5")
     {
+        const int NUM_RUNS = 10;
         ifstream file("test_files/konstitucija.txt");
         if (file.is_open())
         {
             stringstream buffer;
             buffer << file.rdbuf();
             string content = buffer.str();
-            auto start = chrono::high_resolution_clock::now();
-            string hash = SqrtToString(content);
-            auto end = chrono::high_resolution_clock::now();
             file.close();
-            cout << hash << " " << chrono::duration_cast<chrono::duration<double>>(end - start).count() << " s" << endl;
+
+            double total_duration = 0.0;
+            string hash;
+            for (int i = 0; i < NUM_RUNS; ++i)
+            {
+                auto start = chrono::high_resolution_clock::now();
+                hash = SqrtToString(content);
+                auto end = chrono::high_resolution_clock::now();
+                total_duration += chrono::duration_cast<chrono::duration<double>>(end - start).count();
+            }
+            cout << hash << " " << fixed << setprecision(7) << total_duration / NUM_RUNS << " s" << endl;
         }
         else
         {
