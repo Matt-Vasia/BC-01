@@ -53,7 +53,11 @@ string SqrtToString(const string input)
     size_t decimalPos = sqrtAsString.find('.');
     string answer = "";
     if (decimalPos != string::npos) {
-        answer = sqrtAsString.substr(decimalPos + 1, 20);
+        string decimalPart = sqrtAsString.substr(decimalPos + 1, 18); // 19 skaitmenu, nes long long priima max 19 skaitmenu
+        long long decimalAsNumber = stoll(decimalPart); // string to long long
+        ostringstream hexOss;
+        hexOss << hex << decimalAsNumber;
+        answer = hexOss.str();
     }
     return answer;
 }
@@ -203,4 +207,26 @@ void ReadFromFile()
             cerr << "Unable to open file: " << "test_files/konstitucija.txt" << endl;
         }
     }
+}
+
+void UIfunc(){
+    cout << "Manually 1 \nRead from file 2";
+     string input;
+    do
+    {
+        cin >> input;
+    } while (input != "1" && input != "2");
+
+    if(input == "1"){
+        string hash;
+
+        cout << "enter input: \n";
+        cin >> hash;
+        cout << SqrtToString(hash);
+    }
+
+    else {
+        ReadFromFile();
+    }
+
 }

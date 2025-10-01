@@ -19,4 +19,5 @@ void ReadFromFile();
 
 string SqrtToString(const string input);
 
+void UIfunc();
 #endif

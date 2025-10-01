@@ -1,10 +1,10 @@
-#include "LIB.h"
+#include "Functions.cpp"
 
 using namespace std;
 
 
 int main() {
-    ReadFromFile();
+    UIfunc();
     return 0;
 }
 
