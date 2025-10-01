@@ -42,8 +42,8 @@ The function is benchmarked by running each test case 10 times and calculating t
 | Test Case          | Input                       | Generated Hash (Hex) | Average Time (s) |
 | ------------------ | --------------------------- | -------------------- | ---------------- |
 | Empty String       | `""`                        | `5bf950a5665bee9`    | ` 0.0000000`     |
-| Single Character   | `"a"`                       | `3def37a22d8`        | `~0.0000018`     |
-| Single Character   | `"b"`                       | `3e43341a4d4`        | `~0.0000018`     |
-| Random File (3KB)  | `random3000_1.txt`          | `3a43b7c1a2d`        | `~0.0000450`     |
-| Similar File (3KB) | `random3000_similar_1.txt`  | `3a43b7c18f1`        | `~0.0000465`     |
-| Large File (35KB)  | `konstitucija.txt`          | `3c1a2d8b7f`         | `~0.0002800`     |
+| Single Character   | `"a"`                       | `c7ba5e10e0035c8`    | `~0.0000018`     |
+| Single Character   | `"b"`                       | `d2ea1b534a5fd85`    | `~0.0000018`     |
+| Random File (3KB)  | `random3000_1.txt`          | `5d4b63dad6b6df7`    | `~0.0000450`     |
+| Similar File (3KB) | `random3000_similar_1.txt`  | `a8930d077ed4eed`    | `~0.0000465`     |
+| Large File (35KB)  | `konstitucija.txt`          | `10abc7c55a6c6e0`    | `~0.0002800`     |
