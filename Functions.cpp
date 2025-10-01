@@ -75,26 +75,24 @@ void ReadFromFile()
 
     if (input == "1")
     {
-        cout << SqrtToString("") << endl;
+        auto start = chrono::high_resolution_clock::now();
+        string hash = SqrtToString("");
+        auto end = chrono::high_resolution_clock::now();
+        cout << hash << " " << chrono::duration_cast<chrono::duration<double>>(end - start).count() << " s" << endl;
     }
     if (input == "2")
     {
-        vector<string> hashes;
-        vector<string> files = {"test_files/random3000_1.txt", "test_files/random3000_2.txt", "test_files/random3000_3.txt"};
         vector<string> data = {"a", "b", "c"};
         for (const string sample : data)
         {
-            hashes.push_back(SqrtToString(sample));
-        }
-        cout << "Generated Hashes:" << endl;
-        for (const auto &hash : hashes)
-        {
-            cout << hash << endl;
+            auto start = chrono::high_resolution_clock::now();
+            string hash = SqrtToString(sample);
+            auto end = chrono::high_resolution_clock::now();
+            cout << hash << " " << chrono::duration_cast<chrono::duration<double>>(end - start).count() << " s" << endl;
         }
     }
     if (input == "3")
     {
-        vector<string> hashes;
         vector<string> files = {"test_files/random3000_1.txt", "test_files/random3000_2.txt", "test_files/random3000_3.txt"};
         for (const auto &filename : files)
         {
@@ -104,23 +102,20 @@ void ReadFromFile()
                 stringstream buffer;
                 buffer << file.rdbuf();
                 string content = buffer.str();
-                hashes.push_back(SqrtToString(content));
+                auto start = chrono::high_resolution_clock::now();
+                string hash = SqrtToString(content);
+                auto end = chrono::high_resolution_clock::now();
                 file.close();
+                cout << hash << " " << chrono::duration_cast<chrono::duration<double>>(end - start).count() << " s" << endl;
             }
             else
             {
                 cerr << "Unable to open file: " << filename << endl;
             }
         }
-        cout << "Generated Hashes:" << endl;
-        for (const auto &hash : hashes)
-        {
-            cout << hash << endl;
-        }
     }
     if (input == "4")
     {
-        vector<string> hashes;
         vector<string> files = {"test_files/random3000_similar_1.txt", "test_files/random3000_similar_2.txt", "test_files/random3000_similar_3.txt"};
         for (const auto &filename : files)
         {
@@ -130,37 +125,35 @@ void ReadFromFile()
                 stringstream buffer;
                 buffer << file.rdbuf();
                 string content = buffer.str();
-                hashes.push_back(SqrtToString(content));
+                auto start = chrono::high_resolution_clock::now();
+                string hash = SqrtToString(content);
+                auto end = chrono::high_resolution_clock::now();
                 file.close();
+                cout << hash << " " << chrono::duration_cast<chrono::duration<double>>(end - start).count() << " s" << endl;
             }
             else
             {
                 cerr << "Unable to open file: " << filename << endl;
             }
         }
-        cout << "Generated Hashes:" << endl;
-        for (const auto &hash : hashes)
-        {
-            cout << hash << endl;
-        }
     }
     if (input == "5")
     {
-        string hash;
         ifstream file("test_files/konstitucija.txt");
         if (file.is_open())
         {
             stringstream buffer;
             buffer << file.rdbuf();
             string content = buffer.str();
-            hash = SqrtToString(content);
+            auto start = chrono::high_resolution_clock::now();
+            string hash = SqrtToString(content);
+            auto end = chrono::high_resolution_clock::now();
             file.close();
+            cout << hash << " " << chrono::duration_cast<chrono::duration<double>>(end - start).count() << " s" << endl;
         }
         else
         {
             cerr << "Unable to open file: " << "test_files/konstitucija.txt" << endl;
         }
-        cout << "Generated Hashes:" << endl;
-        cout<< hash <<endl;
     }
 }
