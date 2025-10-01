@@ -5,8 +5,10 @@
 #include <string>
 #include <iomanip>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <cmath>
+#include <vector>
 
 using namespace std;
 
