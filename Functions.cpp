@@ -2,7 +2,7 @@
 
 long int Convert_to_ASCII(string str)
 {
-    long int sum = 0;
+    long int sum = 1;
 
     while (str.length() >= 3)
     { // Jei stringas turi bent 3 simbolius
@@ -29,6 +29,7 @@ long int Convert_to_ASCII(string str)
     { // jei stringas turi 1 simboli
         for (char c : str)
         {
+            str[0]>>2;
             sum += static_cast<int>(c);
         }
         str.erase(0, 1);
@@ -210,7 +211,7 @@ void ReadFromFile()
 }
 
 void UIfunc(){
-    cout << "Manually 1 \nRead from file 2";
+    cout << "Manually 1 \nRead from file 2\n";
      string input;
     do
     {
