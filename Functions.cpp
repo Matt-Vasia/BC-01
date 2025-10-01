@@ -1,6 +1,6 @@
 #include "LIB.h"
 
-long int Convert_to_ASCII(string &str)
+long int Convert_to_ASCII(string str)
 {
     long int sum = 0;
 
@@ -37,16 +37,28 @@ long int Convert_to_ASCII(string &str)
     return static_cast<double>(abs(sum));
 }
 
-string SqrtToString(const string &input)
+string SqrtToString(const string input)
 {
-    long double value = Convert_to_ASCII(const_cast<string &>(input));
-    value = sqrt(value + 0.1); // visada prideda 0.1, jog nebutu atveju, kad saknis issitraukia be liekanos
+    long int inputInAscii = Convert_to_ASCII(input);
+
+    long double sqrtOfInputInAscii = sqrt(inputInAscii);
+    if(sqrtOfInputInAscii == static_cast<int>(sqrtOfInputInAscii))
+        inputInAscii+=1;
+    sqrtOfInputInAscii = sqrt(inputInAscii);
+
     ostringstream oss;
-    oss << setprecision(20) << fixed << value;
-    return oss.str();
+    oss << setprecision(25) << fixed << sqrtOfInputInAscii;
+    string sqrtAsString = oss.str();
+
+    size_t decimalPos = sqrtAsString.find('.');
+    string answer = "";
+    if (decimalPos != string::npos) {
+        answer = sqrtAsString.substr(decimalPos + 1, 20);
+    }
+    return answer;
 }
 
-string ReadFromFile()
+void ReadFromFile()
 {
     cout << "Empty 1" << endl;
     cout << "Char 2" << endl;
@@ -58,7 +70,7 @@ string ReadFromFile()
     do
     {
         cin >> input;
-    } while (input != "1" || input != "2" || input != "3" || input != "4" || input != "5");
+    } while (input != "1" && input != "2" && input != "3" && input != "4" && input != "5");
 
 
     if (input == "1")

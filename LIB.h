@@ -12,8 +12,10 @@
 
 using namespace std;
 
-long int Convert_to_ASCII(string& str);
+long int Convert_to_ASCII(string str);
 
-string SqrtToString(const string& input);
+void ReadFromFile();
+
+string SqrtToString(const string input);
 
 #endif
