@@ -2,7 +2,7 @@
 
 long int Convert_to_ASCII(string str)
 {
-    long int sum = 1;
+    long int sum = 1; // suma = 1, nes duodant tuscia faila gaunamas 0
 
     while (str.length() >= 3)
     { // Jei stringas turi bent 3 simbolius
@@ -54,7 +54,7 @@ string SqrtToString(const string input)
     size_t decimalPos = sqrtAsString.find('.');
     string answer = "";
     if (decimalPos != string::npos) {
-        string decimalPart = sqrtAsString.substr(decimalPos + 1, 18); // 19 skaitmenu, nes long long priima max 19 skaitmenu
+        string decimalPart = sqrtAsString.substr(decimalPos + 1, 18); // 18 skaitmenu, nes long long priima max 19 skaitmenu
         long long decimalAsNumber = stoll(decimalPart); // string to long long
         ostringstream hexOss;
         hexOss << hex << decimalAsNumber;
