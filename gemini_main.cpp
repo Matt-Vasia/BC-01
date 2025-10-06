@@ -109,19 +109,26 @@ void run_experiments() {
     if (constitution_file.is_open()) {
         std::string content((std::istreambuf_iterator<char>(constitution_file)), std::istreambuf_iterator<char>());
         std::ofstream results_file("efficiency_data.csv");
-        results_file << "InputSize,TimeSeconds\n";
+        results_file << "InputSize, TimeSeconds\n";
+        const int NUM_ITERATIONS = 100; // Run multiple iterations for better precision
         for (int i = 10; i <= 100; i += 10) {
             std::string chunk = content.substr(0, content.size() * i / 100);
+            
+            // Measure multiple iterations for better accuracy
             auto start = std::chrono::high_resolution_clock::now();
-            hasher.hash(chunk);
+            for (int iter = 0; iter < NUM_ITERATIONS; ++iter) {
+                hasher.hash(chunk);
+            }
             auto end = std::chrono::high_resolution_clock::now();
+            
             std::chrono::duration<double> diff = end - start;
-            results_file << chunk.size() << "," << diff.count() << "\n";
+            double avg_time = diff.count() / NUM_ITERATIONS; // Average time per operation
+            results_file << chunk.size() << "," << avg_time << "\n";
         }
         results_file.close();
-        std::cout << "Efektyvumo testo duomenys issaugoti faile 'efficiency_data.csv'.\nNupieskite grafika naudodami isorini iranki (pvz., Excel, Python/Matplotlib)." << std::endl;
+        std::cout << "Efektyvumo testo duomenys issaugoti faile 'efficiency_data.csv'.\n" << std::endl;
     } else {
-        std::cout << "Failas 'konstitucija.txt' nerastas. Efektyvumo testas praleidziamas." << std::endl;
+        std::cout << "Failas 'test_files/konstitucija.txt' nerastas. Efektyvumo testas praleidziamas." << std::endl;
     }
     
     // 5. Kolizijų paieška
