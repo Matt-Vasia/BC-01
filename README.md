@@ -19,6 +19,16 @@ A C++ application to generate a unique hash from a string or file. The project h
     ./main.exe
     ```
 
+## Reikalavimų atitikimas
+✅ Įvedimas – bet kokio ilgio eilutė (string)
+✅ Rezultatas – visada 64 simboliai hex formatu (256 bitai)
+✅ Deterministiškumas – tas pats įvedimas = tas pats rezultatas
+✅ Efektyvumas – optimizuotas C++ kodas
+✅ Atsparumas kolizijoms – testuojama eksperimentiškai
+✅ Lavinos efektas – matuojamas bitų pokyčių procentas
+✅ Negrįžtamumas – kriptografiškai stiprus algoritmas
+
+    
 ## How It Works (Pseudo-code)
 
 The hashing process involves two main steps: converting the input to a number and then generating a hash from it.
