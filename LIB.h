@@ -10,6 +10,11 @@
 #include <cmath>
 #include <vector>
 #include <chrono>
+#include <cstdint>
+#include <map>
+#include <cassert>
+#include <random>
+#include <bitset>
 
 using namespace std;
 
