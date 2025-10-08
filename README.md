@@ -20,13 +20,13 @@ A C++ application to generate a unique hash from a string or file. The project h
     ```
 
 ## Reikalavimų atitikimas
-✅ Įvedimas – bet kokio ilgio eilutė (string)
-✅ Rezultatas – visada 64 simboliai hex formatu (256 bitai)
-✅ Deterministiškumas – tas pats įvedimas = tas pats rezultatas
-✅ Efektyvumas – optimizuotas C++ kodas
-✅ Atsparumas kolizijoms – testuojama eksperimentiškai
-✅ Lavinos efektas – matuojamas bitų pokyčių procentas
-✅ Negrįžtamumas – kriptografiškai stiprus algoritmas
+
+1. ✅ **Įvedimas** – bet kokio ilgio eilutė (string)
+2. ✅ **Rezultatas** – visada 15 simbolių hex formatu (256 bitai)
+3. ✅ **Deterministiškumas** – tas pats įvedimas = tas pats rezultatas
+4. ✅ **Atsparumas kolizijoms** – testuojama eksperimentiškai
+5. ✅ **Lavinos efektas** – matuojamas bitų pokyčių procentas
+6. ✅ **Negrįžtamumas** – kriptografiškai stiprus algoritmas
 
     
 ## How It Works (Pseudo-code)
