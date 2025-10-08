@@ -3,7 +3,6 @@
 A C++ application to generate a unique hash from a string or file. The project has evolved through several branches to improve the hashing algorithm and add features like hexadecimal output.
 
 ## Branches
-
 - **`main`**: The most stable version with a decimal-based hash and performance timing.
 - **`hex_function`**: (Active Development) Adds hexadecimal hash output.
 - **`V0.2`**: An earlier project milestone.
@@ -28,6 +27,11 @@ A C++ application to generate a unique hash from a string or file. The project h
 5. ✅ **Lavinos efektas** – matuojamas bitų pokyčių procentas
 6. ✅ **Negrįžtamumas** – kriptografiškai stiprus algoritmas
 
+### 4. Efektyvumo matavimas
+- Testuojama su `konstitucija.txt` failu
+- Matuojamas laikas skirtingiems duomenų kiekiams
+- Rezultatai išsaugomi `efficiency_data_stock.csv`
+- ![alt text](stock_image.png)
     
 ## How It Works (Pseudo-code)
 
