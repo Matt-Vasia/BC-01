@@ -30,7 +30,7 @@ A C++ application to generate a unique hash from a string or file. The project h
 ### 4. Efektyvumo matavimas
 - Testuojama su `konstitucija.txt` failu
 - Matuojamas laikas skirtingiems duomenų kiekiams
-- Rezultatai išsaugomi `efficiency_data_stock.csv`
+- Rezultatai išsaugomi `efficiency_data_custom_hash.csv`
 - ![alt text](stock_image.png)
     
 ## How It Works (Pseudo-code)
