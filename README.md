@@ -1,19 +1,19 @@
-# Blockchain Project BC-01
+# Blokų Grandinės Projektas BC-01
 
-A C++ application to generate a unique hash from a string or file. The project has evolved through several branches to improve the hashing algorithm and add features like hexadecimal output.
+C++ programa, skirta generuoti unikalų hash kodą iš teksto arba failo. Projektas vystėsi per kelias šakas, tobulinant hash algoritmą ir pridedant funkcijas, tokias kaip šešioliktainis išvedimas.
 
 ## Branches
-- **`main`**: The most stable version with a decimal-based hash and performance timing.
-- **`hex_function`**: (Active Development) Adds hexadecimal hash output.
-- **`V0.2`**: An earlier project milestone.
+- **`main`**: Stabiliausia versija su dešimtainiu hash kodu ir našumo matavimu.
+- **`hex_function`**: (Aktyvus kūrimas) Pridėtas šešioliktainis hash išvedimas.
+- **`V0.2`**: Ankstesnis projekto etapas.
 
-## Usage
+## Naudojimas
 
-1.  **Compile:**
+1.  **Kompiliavimas:**
     ```bash
     g++ -g main.cpp Functions.cpp -o main.exe
     ```
-2.  **Run:**
+2.  **Paleidimas:**
     ```bash
     ./main.exe
     ```
@@ -21,7 +21,7 @@ A C++ application to generate a unique hash from a string or file. The project h
 ## Reikalavimų atitikimas
 
 1. ✅ **Įvedimas** – bet kokio ilgio eilutė (string)
-2. ✅ **Rezultatas** – visada 15 simbolių hex formatu (256 bitai)
+2. ✅ **Rezultatas** – visada 15 simbolių hex formatu (~60 bitų)
 3. ✅ **Deterministiškumas** – tas pats įvedimas = tas pats rezultatas
 4. ✅ **Atsparumas kolizijoms** – testuojama eksperimentiškai
 5. ✅ **Lavinos efektas** – matuojamas bitų pokyčių procentas
@@ -58,31 +58,47 @@ A C++ application to generate a unique hash from a string or file. The project h
 
 **Išvada:** Hash funkcija demonstruoja puikų lavinos efektą su 46.88% bitų pokyčiu, kuris yra labai arti idealaus 50% rodiklio. Stabilus rezultatas (visi matavimo duomenys identiškai 46.88%) rodo konsistentų funkcijos elgesį ir stiprų kriptografinį atsparumą.
     
-## How It Works (Pseudo-code)
+## Kaip Veikia (Pseudo-kodas)
 
-The hashing process involves two main steps: converting the input to a number and then generating a hash from it.
+Hash generavimo procesas susideda iš dviejų pagrindinių žingsnių: įvedimo konvertavimo į skaičių ir hash generavimo iš jo.
 
 1.  **`Convert_to_ASCII`**:
-    - The input string is processed in chunks of 3 characters.
-    - A series of bitwise operations (XOR, OR, AND, bit shifts) are applied to the ASCII values of the characters to create a complex numerical representation.
-    - The results are accumulated into a single large integer (`sum`).
-    - Any remaining 1 or 2 characters are processed and added to the `sum`.
+    - Įvedimo eilutė apdorojama po 3 simbolius
+    - Atliekamos bitų operacijos (XOR, OR, AND, bit shifts) su ASCII reikšmėmis, sukuriant sudėtingą skaitinį atvaizdą
+    - Rezultatai kaupiami į vieną didelį sveikąjį skaičių (`sum`)
+    - Likę 1 arba 2 simboliai apdorojami ir pridedami prie `sum`
 
 2.  **`SqrtToString`**:
-    - The integer `sum` from the previous step is used.
-    - The square root of this number is calculated. To avoid trivial hashes, if the result is a whole number, the input is incremented by 1 and the square root is recalculated.
-    - The first 18 digits of the fractional part of the square root are extracted.
-    - This 18-digit number is converted into its hexadecimal representation, which becomes the final hash.
+    - Naudojamas sveikasis skaičius `sum` iš ankstesnio žingsnio
+    - Apskaičiuojama šio skaičiaus kvadratinė šaknis. Vengiant trivialių hash'ų, jei rezultatas yra sveikasis skaičius, įvedimas padidinamas 1 ir kvadratinė šaknis perskaičiuojama
+    - Išskiriami pirmieji 18 skaitmenų iš trupmeninės dalies
+    - Šis 18 skaitmenų skaičius konvertuojamas į šešioliktainį formatą, kuris tampa galutiniu hash kodu
 
-## Performance & Testing Results
+## Našumo ir Testavimo Rezultatai
 
-The function is benchmarked by running each test case 10 times and calculating the average execution time.
+Funkcija testuojama paleidžiant kiekvieną testą 10 kartų ir apskaičiuojant vidutinį vykdymo laiką.
 
-| Test Case          | Input                       | Generated Hash (Hex) | Average Time (s) |
-| ------------------ | --------------------------- | -------------------- | ---------------- |
-| Empty String       | `""`                        | `5bf950a5665bee9`    | ` 0.0000000`     |
-| Single Character   | `"a"`                       | `c7ba5e10e0035c8`    | `~0.0000018`     |
-| Single Character   | `"b"`                       | `d2ea1b534a5fd85`    | `~0.0000018`     |
-| Random File (3KB)  | `random3000_1.txt`          | `5d4b63dad6b6df7`    | `~0.0000450`     |
-| Similar File (3KB) | `random3000_similar_1.txt`  | `a8930d077ed4eed`    | `~0.0000465`     |
-| Large File (35KB)  | `konstitucija.txt`          | `10abc7c55a6c6e0`    | `~0.0002800`     |
+| Testo Atvejis      | Įvedimas                    | Sugeneruotas Hash (Hex) | Vidutinis Laikas (s) |
+| ------------------ | --------------------------- | ----------------------- | -------------------- |
+| Tuščia Eilutė      | `""`                        | `5bf950a5665bee9`       | ` 0.0000000`         |
+| Vienas Simbolis    | `"a"`                       | `c7ba5e10e0035c8`       | `~0.0000018`         |
+| Vienas Simbolis    | `"b"`                       | `d2ea1b534a5fd85`       | `~0.0000018`         |
+| Atsitiktinis Failas (3KB)  | `random3000_1.txt`    | `5d4b63dad6b6df7`       | `~0.0000450`         |
+| Panašus Failas (3KB) | `random3000_similar_1.txt` | `a8930d077ed4eed`    | `~0.0000465`         |
+| Didelis Failas (35KB) | `konstitucija.txt`       | `10abc7c55a6c6e0`       | `~0.0002800`         |
+
+## Palyginimas su GeminiHash-256
+
+| Charakteristika | Custom Hash (SqrtToString) | GeminiHash-256 | Laimėtojas |
+|----------------|---------------------------|----------------|------------|
+| **Išvedimo dydis** | 15 hex simbolių (~60 bitų) | 64 hex simboliai (256 bitų) | GeminiHash-256 |
+| **Kolizijų atsparumas** | 0/10,000 (puiku) | 0/10,000 (puiku) | Lygūs |
+| **Lavinos efektas** | 46.88% (puiku) | ~49-50% (idealus) | GeminiHash-256 |
+| **Algoritmo sudėtingumas** | Paprastas (sqrt + hex) | Sudėtingas (SHA-256 tipo) | Custom Hash |
+| **Kriptografinė stiprybė** | Vidutinė | Stipri | GeminiHash-256 |
+| **Našumas** | Labai greitas | Greitas | Custom Hash |
+| **Originalumas** | Unikalus sprendimas | SHA-256 adaptacija | Custom Hash |
+
+### Išvados:
+- **Custom Hash**: Paprastesnis, greitesnis, unikalus, bet trumpesnis išvedimas
+- **GeminiHash-256**: Stipresnis kriptografiškai, standartinis 256-bitų išvedimas
