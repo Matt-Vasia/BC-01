@@ -23,7 +23,7 @@ class Transaction{
     Transaction(const string& sendKey, const string& recKey, double total)
     : senderKey(sendKey), recieverKey(recKey), amount(total)
     {
-        string transHash = sendKey + recKey + std::to_string(total);
+        string transHash = sendKey + recKey + to_string(total);
         transactionID = SqrtToString(transHash);
     }
 
@@ -45,6 +45,27 @@ class Block{
     string hash;
 
     vector<Transaction> transactions;
+
+    string calculateHash() {
+        string blockData = prevHash + 
+            to_string(timestamp) + 
+            to_string(version) + 
+            merkleRoot + 
+            to_string(nonce) + 
+            to_string(difficulty);
+        return SqrtToString(blockData);
+    }
+
+    string calculateMerkleRoot(){
+        if(transactions.empty()) 
+            return "empty block";
+
+        string hash = "";
+
+        for (auto &&i : transactions)
+            hash += i.getTransactionID();
+        return SqrtToString(hash);
+    }
 
     // Getters
     string getHash() const { return hash; }
