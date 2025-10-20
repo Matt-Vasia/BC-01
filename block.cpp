@@ -26,4 +26,33 @@ class Transaction{
         string transHash = sendKey + recKey + std::to_string(total);
         transactionID = SqrtToString(transHash);
     }
+
+    //getters
+    string getTransactionID() const { return transactionID; }
+    string getSenderKey() const { return senderKey; }
+    string getReceiverKey() const { return recieverKey; }
+    double getAmount() const { return amount; }
+};
+
+class Block{
+    private:
+    string prevHash;
+    long timestamp;
+    double version;
+    string merkleRoot;
+    int nonce;
+    int difficulty;
+    string hash;
+
+    vector<Transaction> transactions;
+
+    // Getters
+    string getHash() const { return hash; }
+    string getPreviousHash() const { return prevHash; }
+    long long getTimestamp() const { return timestamp; }
+    int getVersion() const { return version; }
+    string getMerkleRoot() const { return merkleRoot; }
+    int getNonce() const { return nonce; }
+    int getDifficulty() const { return difficulty; }
+    vector<Transaction> getTransactions() const { return transactions; }
 };
