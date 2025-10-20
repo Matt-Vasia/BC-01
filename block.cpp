@@ -20,7 +20,10 @@ class Transaction{
     double amount;
 
     public:
-    Transaction(const string& transID, const string& sendKey, const string& recKey, double total)
-    : transactionID(transID), senderKey(sendKey), recieverKey(recKey), amount(total)
-    {}
+    Transaction(const string& sendKey, const string& recKey, double total)
+    : senderKey(sendKey), recieverKey(recKey), amount(total)
+    {
+        string transHash = sendKey + recKey + std::to_string(total);
+        transactionID = SqrtToString(transHash);
+    }
 };
