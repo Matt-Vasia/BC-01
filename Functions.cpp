@@ -1,4 +1,5 @@
 #include "LIB.h"
+#include "Blockchain.h"
 
 long int Convert_to_ASCII(string str)
 {
@@ -370,13 +371,44 @@ void run_hash_experiments() {
 }
 
 
+void runBlockchainDemo() {
+    cout << "=== BLOCKCHAIN DEMO ===" << endl;
+    
+    // Create blockchain
+    Blockchain blockchain;
+    blockchain.setDifficulty(2);
+    blockchain.setMiningReward(100.0);
+    
+    cout << "Blockchain created with difficulty " << blockchain.getDifficulty() << endl;
+    blockchain.printChain();
+    
+    // Add some transactions
+    cout << "\nAdding transactions..." << endl;
+    blockchain.addTransaction(Transaction("", "Alice", 1000));  // Initial funds
+    blockchain.addTransaction(Transaction("", "Bob", 500));    // Initial funds
+    blockchain.minePendingTransactions("Miner1");
+    
+    // More transactions
+    blockchain.addTransaction(Transaction("Alice", "Bob", 50));
+    blockchain.addTransaction(Transaction("Bob", "Alice", 25));
+    blockchain.minePendingTransactions("Miner1");
+    
+    // Print final state
+    blockchain.printChain();
+    
+    cout << "\n=== BALANCES ===" << endl;
+    cout << "Alice: " << blockchain.getBalance("Alice") << endl;
+    cout << "Bob: " << blockchain.getBalance("Bob") << endl;
+    cout << "Miner1: " << blockchain.getBalance("Miner1") << endl;
+}
+
 void UIfunc(){
-    cout << "Manually 1 \nRead from file 2\nRun experiments 3\n";
+    cout << "Manually 1 \nRead from file 2\nRun experiments 3\nBlockchain Demo 4\n";
      string input;
     do
     {
         cin >> input;
-    } while (input != "1" && input != "2" && input != "3");
+    } while (input != "1" && input != "2" && input != "3" && input != "4");
 
     if(input == "1"){
         string hash;
@@ -388,7 +420,10 @@ void UIfunc(){
     else if (input == "2") {
         ReadFromFile();
     }
-    else {
+    else if (input == "3") {
         run_hash_experiments();
+    }
+    else {
+        runBlockchainDemo();
     }
 }
