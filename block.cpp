@@ -11,6 +11,11 @@ public:
         : name(n), public_key(key), balance(bal)
     {}
     
+
+    string getName() {return name; }
+    string getPublic_key() {return public_key; }
+    double getBal(){return balance; }
+    void setBal(double bal){ balance = bal; } // gal reiktu idet logika, kad nebutu galima manipuliuot.
 };
 
 class Transaction{
@@ -67,10 +72,19 @@ class Block{
         return SqrtToString(hash);
     }
 
+    //constructor 
+    Block(const string& previousHash, const vector<Transaction> trans, int diff)
+        : prevHash(previousHash), transactions(trans), difficulty(diff), version(1), nonce(0) {
+            timestamp = time(0);
+            merkleRoot = calculateMerkleRoot();
+            hash = calculateHash();
+        }
+
+    public:
     // Getters
     string getHash() const { return hash; }
     string getPreviousHash() const { return prevHash; }
-    long long getTimestamp() const { return timestamp; }
+    long getTimestamp() const { return timestamp; }
     int getVersion() const { return version; }
     string getMerkleRoot() const { return merkleRoot; }
     int getNonce() const { return nonce; }
