@@ -11,11 +11,13 @@ public:
         : name(n), public_key(key), balance(bal)
     {}
     
-
     string getName() {return name; }
     string getPublic_key() {return public_key; }
     double getBal(){return balance; }
+    
     void setBal(double bal){ balance = bal; } // gal reiktu idet logika, kad nebutu galima manipuliuot.
+    void setBal(string newName){ name = newName; } 
+    void setBal(double key){ public_key = key; } 
 };
 
 class Transaction{

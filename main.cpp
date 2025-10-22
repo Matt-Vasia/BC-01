@@ -5,8 +5,8 @@ using namespace std;
 
 
 int main() {
-    // UIfunc();
-    Transaction("user1", "user2", 10.43);
+    UIfunc();
+    // Transaction("user1", "user2", 10.43);
     return 0;
 }
 
