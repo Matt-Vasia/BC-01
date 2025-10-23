@@ -25,5 +25,7 @@ void ReadFromFile();
 
 string SqrtToString(const string input);
 
+vector<Transaction> Txs;
+
 void UIfunc();
 #endif
