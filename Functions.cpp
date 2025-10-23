@@ -427,6 +427,33 @@ void UIfunc()
     }
 }
 
+void create_users()
+{
+    static std::mt19937 rng{std::random_device{}()};         // kazka cia turetu reikst, kad random.. klausti DI.
+    std::uniform_real_distribution<double> d(10.0, 10000.0); // nusato nuo 10 iki 10000 random skaiciu
+
+    Users.clear();
+
+    int count = 0;
+
+    cout << "choose the number of users: ";
+    cin >> count;
+
+    string newName = "";
+    string newKey = "";
+    double newBal = 0;
+
+    for (size_t i = 0; i < count; i++)
+    {
+        newName = "User" + to_string(i);
+        newKey = SqrtToString(newName);
+        newBal = d(rng);
+
+        User newUser(newName, newKey, newBal);
+        Users.push_back(newUser);
+    }
+}
+
 void trans_generator()
 {
     static std::mt19937 rng{std::random_device{}()};
