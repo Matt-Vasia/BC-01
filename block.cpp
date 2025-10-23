@@ -22,7 +22,7 @@ public:
     void setBal(double key) { public_key = key; }
 };
 
-class UsersTransaction
+class Transaction
 {
     string transactionID;
     string senderKey;

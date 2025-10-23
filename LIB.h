@@ -27,5 +27,7 @@ string SqrtToString(const string input);
 
 vector<Transaction> Txs;
 
+vector<User> Users;
+
 void UIfunc();
 #endif
