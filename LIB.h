@@ -25,9 +25,12 @@ void ReadFromFile();
 
 string SqrtToString(const string input);
 
-vector<Transaction> Txs;
-
-vector<User> Users;
-
 void UIfunc();
+
+void create_users();
+
+void trans_generator();
+
+void mineBlock();
+
 #endif

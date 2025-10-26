@@ -18,20 +18,20 @@ public:
     double getBal() { return balance; }
 
     void setBal(double bal) { balance = bal; } // gal reiktu idet logika, kad nebutu galima manipuliuot.
-    void setBal(string newName) { name = newName; }
-    void setBal(double key) { public_key = key; }
+    void setName(string newName) { name = newName; }
+    void setPublic_key(double key) { public_key = key; }
 };
 
 class Transaction
 {
     string transactionID;
     string senderKey;
-    string recieverKey;
+    string receiverKey;
     double amount;
 
 public:
     Transaction(const string &sendKey, const string &recKey, double total)
-        : senderKey(sendKey), recieverKey(recKey), amount(total)
+        : senderKey(sendKey), receiverKey(recKey), amount(total)
     {
         string transHash = sendKey + recKey + to_string(total);
         transactionID = SqrtToString(transHash);
@@ -40,7 +40,7 @@ public:
     // getters
     string getTransactionID() const { return transactionID; }
     string getSenderKey() const { return senderKey; }
-    string getReceiverKey() const { return recieverKey; }
+    string getReceiverKey() const { return receiverKey; }
     double getAmount() const { return amount; }
 };
 
@@ -49,10 +49,10 @@ class Block
 private:
     string prevHash;
     long timestamp;
-    double version;
+    int version;
     string merkleRoot;
     int nonce;
-    int difficulty;
+    int difficulty=1;
     string hash;
 
     vector<Transaction> transactions;
@@ -80,6 +80,34 @@ private:
         return SqrtToString(hash);
     }
 
+    public:
+
+         void mineBlock(){
+
+            string dif(difficulty, '0');
+
+            nonce = 0;
+            hash = calculateHash();
+
+            while(hash.substr(0,difficulty) != dif){
+                nonce++;
+                hash = calculateHash();
+            
+                // if (nonce % 1000 == 0) {
+                //     cout << "Kasama... (Nonce: " << nonce << ") Hash: " << hash << endl;
+                // }
+
+                if (nonce > 10000000) {
+            cout << "Mining taking too long - hash function may not produce leading zeros!" << endl;
+            break;
+        }
+            }
+
+            cout << "--- BLOKAS IŠKASTAS! ---" << endl;
+            cout << "Hash: " << hash << endl;
+            cout << "Nonce: " << nonce << endl;
+        }
+
     // constructor
     Block(const string &previousHash, const vector<Transaction> trans, int diff)
         : prevHash(previousHash), transactions(trans), difficulty(diff), version(1), nonce(0)
@@ -99,4 +127,6 @@ public:
     int getNonce() const { return nonce; }
     int getDifficulty() const { return difficulty; }
     vector<Transaction> getTransactions() const { return transactions; }
+
+    void setDifficulty(int num){difficulty=num;}
 };

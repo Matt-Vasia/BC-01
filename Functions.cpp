@@ -1,6 +1,10 @@
 #include "LIB.h"
 #include "block.cpp"
 
+vector<Transaction> Txs;
+
+vector<User> Users;
+
 long int Convert_to_ASCII(string str)
 {
     long int sum = 1; // suma = 1, nes duodant tuscia faila gaunamas 0
@@ -36,12 +40,14 @@ long int Convert_to_ASCII(string str)
         str.erase(0, 1);
     }
 
-    return static_cast<double>(abs(sum));
+    return abs(sum);
 }
 
 string SqrtToString(const string input)
 {
     long int inputInAscii = Convert_to_ASCII(input);
+
+        // inputInAscii = (inputInAscii % 1048576) ^ (inputInAscii >> 10);
 
     long double sqrtOfInputInAscii = sqrt(inputInAscii);
     if (sqrtOfInputInAscii == static_cast<int>(sqrtOfInputInAscii))
@@ -59,9 +65,14 @@ string SqrtToString(const string input)
         string decimalPart = sqrtAsString.substr(decimalPos + 1, 18); // 18 skaitmenu, nes long long priima max 19 skaitmenu
         long long decimalAsNumber = stoll(decimalPart);               // string to long long
         ostringstream hexOss;
-        hexOss << hex << decimalAsNumber;
+        hexOss << std::hex << std::setw(2) << std::setfill('0') << std::uppercase
+       << static_cast<int>(decimalAsNumber);
         answer = hexOss.str();
     }
+if (answer.length() < 8) {
+        answer = string(8 - answer.length(), '0') + answer;
+    }
+
     return answer;
 }
 
@@ -445,19 +456,27 @@ void create_users()
 
     for (size_t i = 0; i < count; i++)
     {
-        newName = "User" + to_string(i);
+        newName = "User" + to_string(i+1);
         newKey = SqrtToString(newName);
         newBal = d(rng);
 
         User newUser(newName, newKey, newBal);
         Users.push_back(newUser);
+    //     cout << Users[i].getName() << " ";
+    //     cout << Users[i].getBal() << endl;
     }
 }
 
 void trans_generator()
 {
+    if(Users.empty()) {
+        cout << "No users available! Please create users first (option 4)." << endl;
+        return;
+    }
+    
     static std::mt19937 rng{std::random_device{}()};
-    std::uniform_real_distribution<int> d(10, 100000);
+    std::uniform_int_distribution<int> user_dist(0, Users.size() - 1);
+    std::uniform_real_distribution<double> amount_dist(10.0, 1000.0);
 
     int count = 0;
 
@@ -466,17 +485,63 @@ void trans_generator()
 
     for (size_t i = 0; i < count; i++)
     {
-        int sender_index = d(rng);
-        int receiver_index = d(rng);
+        int sender_index = user_dist(rng);
+        int receiver_index = user_dist(rng);
         while (sender_index == receiver_index)
-            receiver_index = d(rng);
+            receiver_index = user_dist(rng);
 
-        double sum = d(rng);
+        double sum = amount_dist(rng);
 
-        string sender_key = Users[sender_index].getPublicKey();
-        string receiver_key = Users[receiver_index].getPublicKey();
+        string sender_key = Users[sender_index].getPublic_key();
+        string receiver_key = Users[receiver_index].getPublic_key();
 
         Transaction trans = Transaction(sender_key, receiver_key, sum);
         Txs.push_back(trans);
+        
+        // cout << "Transaction " << (i+1) << " created: " 
+        //      << Users[sender_index].getName() << " -> " 
+        //      << Users[receiver_index].getName() << " : " 
+        //      << fixed << setprecision(2) << sum << endl;
     }
+    
+    cout << "Total transactions created: " << Txs.size() << endl;
+}
+
+void mineBlock() {
+    if(Txs.empty()) {
+        cout << "No transactions available to mine! Please create transactions first." << endl;
+        return;
+    }
+    
+    cout << "Starting mining process..." << endl;
+    cout << "Number of transactions to include: " << Txs.size() << endl;
+    
+    string previousHash = "0000000000000000000000000000000000000000000000000000000000000000"; // Genesis block 
+
+    int difficulty = 3;
+
+    Block newBlock(previousHash, Txs, difficulty);
+    
+    // cout << "Block created with " << Txs.size() << " transactions" << endl;
+    // cout << "Previous Hash: " << newBlock.getPreviousHash() << endl;
+    // cout << "Merkle Root: " << newBlock.getMerkleRoot() << endl;
+    // cout << "Difficulty: " << newBlock.getDifficulty() << endl;
+    // cout << "Timestamp: " << newBlock.getTimestamp() << endl;
+    //  cout << "Testing hash function with modulo fix..." << endl;
+    // for(int i = 0; i < 10; i++) {
+    //     string testHash = SqrtToString("test" + to_string(i));
+    //     cout << "Test hash " << i << ": " << testHash << endl;
+    // }
+
+    // Start mining
+    newBlock.mineBlock();
+    
+    cout << "\n=== BLOCK SUCCESSFULLY MINED ===" << endl;
+    cout << "Final Hash: " << newBlock.getHash() << endl;
+    cout << "Final Nonce: " << newBlock.getNonce() << endl;
+    cout << "Transactions included: " << newBlock.getTransactions().size() << endl;
+    
+    // Clear transactions after mining
+    Txs.clear();
+    cout << "Transactions cleared. Ready for new block." << endl;
 }
