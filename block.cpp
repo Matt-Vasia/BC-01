@@ -19,7 +19,7 @@ public:
 
     void setBal(double bal) { balance = bal; } // gal reiktu idet logika, kad nebutu galima manipuliuot.
     void setName(string newName) { name = newName; }
-    void setPublic_key(double key) { public_key = key; }
+    void setPublic_key(string key) { public_key = key; }
 };
 
 class Transaction
@@ -108,7 +108,7 @@ private:
             cout << "Previous Hash: " << getPreviousHash() << endl;
             cout << "Timestamp: " << getTimestamp() << endl;
             cout << "Merkle Root: " << getMerkleRoot() << endl;
-            cout << "Difficulty: " << getDifficulty() << endl;
+            cout << "Difficulty: " << getDifficulty() << endl <<endl;
         }
 
     // constructor
@@ -142,14 +142,15 @@ class BlockChain{
 
     public:
     BlockChain(int diff=3) : difficulty(diff){
-       
-        Block genesisblock("0", vector<Transaction>(), difficulty);
+        // Use a full-length 64-hex zero previous hash for genesis
+        const string genesisPrevHash = string(64, '0');
+        Block genesisblock(genesisPrevHash, vector<Transaction>(), difficulty);
         genesisblock.mineBlock();
         chain.push_back(genesisblock);
         cout << "Genesis block created!" << endl;
     }
 
-    Block getLastBlock(){
+    const Block& getLastBlock(){
         return chain.back();
     }
 

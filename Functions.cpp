@@ -1,4 +1,5 @@
 #include "LIB.h"
+#include "gemini/gemini_hash.cpp"
 #include "block.cpp"
 
 vector<Transaction> Txs;
@@ -45,35 +46,9 @@ long int Convert_to_ASCII(string str)
 
 string SqrtToString(const string input)
 {
-    long int inputInAscii = Convert_to_ASCII(input);
-
-        // inputInAscii = (inputInAscii % 1048576) ^ (inputInAscii >> 10);
-
-    long double sqrtOfInputInAscii = sqrt(inputInAscii);
-    if (sqrtOfInputInAscii == static_cast<int>(sqrtOfInputInAscii))
-        inputInAscii += 1;
-    sqrtOfInputInAscii = sqrt(inputInAscii);
-
-    ostringstream oss;
-    oss << setprecision(25) << fixed << sqrtOfInputInAscii;
-    string sqrtAsString = oss.str();
-
-    size_t decimalPos = sqrtAsString.find('.');
-    string answer = "";
-    if (decimalPos != string::npos)
-    {
-        string decimalPart = sqrtAsString.substr(decimalPos + 1, 18); // 18 skaitmenu, nes long long priima max 19 skaitmenu
-        long long decimalAsNumber = stoll(decimalPart);               // string to long long
-        ostringstream hexOss;
-        hexOss << std::hex << std::setw(2) << std::setfill('0') << std::uppercase
-       << static_cast<int>(decimalAsNumber);
-        answer = hexOss.str();
-    }
-if (answer.length() < 8) {
-        answer = string(8 - answer.length(), '0') + answer;
-    }
-
-    return answer;
+    // Use a proper 256-bit hash for sufficient entropy and fixed-length output
+    GeminiHash256 hasher;
+    return hasher.hash(input);
 }
 
 void ReadFromFile()
