@@ -19,6 +19,12 @@
 
 using namespace std;
 
+class User;
+
+class Transaction;
+
+class BlockChain;
+
 long int Convert_to_ASCII(string str);
 
 void ReadFromFile();

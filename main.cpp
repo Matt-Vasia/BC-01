@@ -1,20 +1,24 @@
-#include "LIB.h"
-// #include "block.cpp"
+// #include "LIB.h"
+#include "Functions.cpp"
 
 using namespace std;
 
 
 int main() {
-    // UIfunc();
+    BlockChain myChain(4);
+
     create_users();
     trans_generator();
-    cout << "Testing hash function:" << endl;
-for(int i = 0; i < 10; i++) {
-    string test = "test" + to_string(i);
-    string hash = SqrtToString(test);
-    cout << "Input: " << test << " -> Hash: " << hash << " (length: " << hash.length() << ")" << endl;
-}
-    mineBlock();
+
+    for(const auto& tx : Txs) {
+        myChain.addTransaction(tx);
+    }
+    Txs.clear();
+
+    myChain.minePending();
+
+    cout << "\n--- Blockchain content ---" << endl;
+    myChain.printChain();
     return 0;
 }
 

@@ -92,10 +92,6 @@ private:
             while(hash.substr(0,difficulty) != dif){
                 nonce++;
                 hash = calculateHash();
-            
-                // if (nonce % 1000 == 0) {
-                //     cout << "Kasama... (Nonce: " << nonce << ") Hash: " << hash << endl;
-                // }
 
                 if (nonce > 10000000) {
             cout << "Mining taking too long - hash function may not produce leading zeros!" << endl;
@@ -106,6 +102,13 @@ private:
             cout << "--- BLOKAS IŠKASTAS! ---" << endl;
             cout << "Hash: " << hash << endl;
             cout << "Nonce: " << nonce << endl;
+        }
+
+        void printBlock() const {
+            cout << "Previous Hash: " << getPreviousHash() << endl;
+            cout << "Timestamp: " << getTimestamp() << endl;
+            cout << "Merkle Root: " << getMerkleRoot() << endl;
+            cout << "Difficulty: " << getDifficulty() << endl;
         }
 
     // constructor
@@ -127,6 +130,50 @@ public:
     int getNonce() const { return nonce; }
     int getDifficulty() const { return difficulty; }
     vector<Transaction> getTransactions() const { return transactions; }
-
+    
     void setDifficulty(int num){difficulty=num;}
+};
+
+class BlockChain{
+    public:
+    vector<Block> chain;
+    vector<Transaction> pendingTransactions;
+    int difficulty;
+
+    public:
+    BlockChain(int diff=3) : difficulty(diff){
+       
+        Block genesisblock("0", vector<Transaction>(), difficulty);
+        genesisblock.mineBlock();
+        chain.push_back(genesisblock);
+        cout << "Genesis block created!" << endl;
+    }
+
+    Block getLastBlock(){
+        return chain.back();
+    }
+
+    void addTransaction(const Transaction& trans){
+        pendingTransactions.push_back(trans);
+    }
+
+    void minePending(){
+        if(pendingTransactions.empty()){
+            cout << "There are none pending transactions.\n";
+            return;
+        }
+
+        Block newBlock(getLastBlock().getHash(), pendingTransactions, difficulty);
+        newBlock.mineBlock();
+
+        chain.push_back(newBlock);
+
+        pendingTransactions.clear();
+    }
+
+    void printChain() const {
+        for(const auto& block : chain) {
+            block.printBlock();
+        }
+    }
 };
