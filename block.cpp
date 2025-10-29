@@ -48,7 +48,7 @@ class Block
 {
 private:
     string prevHash;
-    long timestamp;
+    time_t timestamp;
     int version;
     string merkleRoot;
     int nonce;
@@ -106,7 +106,7 @@ private:
 
         void printBlock() const {
             cout << endl << "Previous Hash: " << getPreviousHash() << endl;
-            cout << "Timestamp: " << getTimestamp() << endl;
+            cout << "Timestamp: " << ctime(&timestamp);
             cout << "Merkle Root: " << getMerkleRoot() << endl;
             cout << "Difficulty: " << getDifficulty() << endl << endl;
         }
@@ -115,7 +115,7 @@ private:
     Block(const string &previousHash, const vector<Transaction> trans, int diff)
         : prevHash(previousHash), transactions(trans), difficulty(diff), version(1), nonce(0)
     {
-        timestamp = time(0);
+        time(&timestamp);
         merkleRoot = calculateMerkleRoot();
         hash = calculateHash();
     }
@@ -124,7 +124,7 @@ public:
     // Getters
     string getHash() const { return hash; }
     string getPreviousHash() const { return prevHash; }
-    long getTimestamp() const { return timestamp; }
+    time_t getTimestamp() const { return timestamp; }
     int getVersion() const { return version; }
     string getMerkleRoot() const { return merkleRoot; }
     int getNonce() const { return nonce; }

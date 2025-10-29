@@ -7,7 +7,9 @@
 - Turėti paprastą maišos funkciją tekstui („custom hash“ — `SqrtToString`).
 - Sugeneruoti vartotojus su viešais raktų atvaizdais (naudojant `SqrtToString`).
 - Sugeneruoti atsitiktines transakcijas tarp vartotojų.
-- Implementuoti bloko kasimą
+- Implementuoti blokų kasimą
+- Iškastų blokų įtraukimas į blokų grandinę
+- Vartotojo sąsajos sukūrimas
 
 ## Projekto struktūra (aktualu v0.1)
 
