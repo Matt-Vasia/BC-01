@@ -7,8 +7,7 @@
 - Turėti paprastą maišos funkciją tekstui („custom hash“ — `SqrtToString`).
 - Sugeneruoti vartotojus su viešais raktų atvaizdais (naudojant `SqrtToString`).
 - Sugeneruoti atsitiktines transakcijas tarp vartotojų.
-- Paruošti bazę blokui su ankstesnio bloko hash, merkle šaknimi, nonce ir difficulty (minavimas kaip procesas yra paruoštas, tačiau blokų klasė dar neužbaigta — žr. „Žinomos spragos“).
-- Atlikti bazinius hash eksperimentus (efektyvumas, lavinos efektas, kolizijų paieška).
+- Implementuoti bloko kasimą
 
 ## Projekto struktūra (aktualu v0.1)
 
