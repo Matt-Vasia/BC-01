@@ -504,7 +504,7 @@ void trans_generator()
         //      << fixed << setprecision(2) << sum << endl;
     }
     
-    cout << "Total transactions created: " << Txs.size() << endl;
+    cout << "Total transactions created: " << Txs.size() << endl << endl;
 }
 
 void mineBlock() {

@@ -93,13 +93,13 @@ private:
                 nonce++;
                 hash = calculateHash();
 
-                if (nonce > 10000000) {
+                if (nonce > 30000000) {
             cout << "Mining taking too long - hash function may not produce leading zeros!" << endl;
             break;
         }
             }
 
-            cout << "--- BLOKAS IŠKASTAS! ---" << endl;
+            cout << "--- BLOKAS ISKASTAS! ---" << endl;
             cout << "Hash: " << hash << endl;
             cout << "Nonce: " << nonce << endl;
         }
@@ -146,7 +146,7 @@ class BlockChain{
         Block genesisblock("0", vector<Transaction>(), difficulty);
         genesisblock.mineBlock();
         chain.push_back(genesisblock);
-        cout << "Genesis block created!" << endl;
+        cout << "Genesis block created!" << endl << endl;
     }
 
     Block getLastBlock(){

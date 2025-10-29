@@ -5,7 +5,7 @@ using namespace std;
 
 
 int main() {
-    BlockChain myChain(4);
+    BlockChain myChain(3);
 
     create_users();
     trans_generator();
