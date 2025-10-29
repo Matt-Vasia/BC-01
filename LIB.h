@@ -16,6 +16,7 @@
 #include <random>
 #include <bitset>
 #include <ctime>
+#include <algorithm>
 
 using namespace std;
 
@@ -24,6 +25,9 @@ class User;
 class Transaction;
 
 class BlockChain;
+
+extern vector<User> Users;
+extern vector<Transaction> Txs;
 
 long int Convert_to_ASCII(string str);
 

@@ -13,9 +13,9 @@ public:
     {
     }
 
-    string getName() { return name; }
-    string getPublic_key() { return public_key; }
-    double getBal() { return balance; }
+    string getName() const { return name; }
+    string getPublic_key() const { return public_key; }
+    double getBal() const { return balance; }
 
     void setBal(double bal) { balance = bal; } // gal reiktu idet logika, kad nebutu galima manipuliuot.
     void setName(string newName) { name = newName; }
@@ -105,10 +105,10 @@ private:
         }
 
         void printBlock() const {
-            cout << "Previous Hash: " << getPreviousHash() << endl;
+            cout << endl << "Previous Hash: " << getPreviousHash() << endl;
             cout << "Timestamp: " << getTimestamp() << endl;
             cout << "Merkle Root: " << getMerkleRoot() << endl;
-            cout << "Difficulty: " << getDifficulty() << endl;
+            cout << "Difficulty: " << getDifficulty() << endl << endl;
         }
 
     // constructor
@@ -154,6 +154,22 @@ class BlockChain{
     }
 
     void addTransaction(const Transaction& trans){
+          bool senderFound = false;
+        for (auto& user : Users) {
+            if (user.getPublic_key() == trans.getSenderKey()) {
+                senderFound = true;
+                if (user.getBal() < trans.getAmount()) {
+                    cout << "Transaction failed: " << user.getName() << " has insufficient funds." << endl << endl;
+                    return; // Neleidžiame pridėti transakcijos
+                }
+                break;
+            }
+        }
+        if (!senderFound) {
+            cout << "Transaction failed: Sender with key " << trans.getSenderKey() << " not found." << endl << endl;
+            return;
+        }
+
         pendingTransactions.push_back(trans);
     }
 
@@ -168,6 +184,31 @@ class BlockChain{
 
         chain.push_back(newBlock);
 
+         // 5. Atnaujiname vartotojų balansus
+        cout << "Updating user balances..." << endl;
+        for (const auto& tx : pendingTransactions) {
+            bool sender_found = false;
+            bool receiver_found = false;
+            // Atimame pinigus iš siuntėjo
+            for (auto& user : Users) {
+                if (user.getPublic_key() == tx.getSenderKey()) {
+                    user.setBal(user.getBal() - tx.getAmount());
+                    sender_found = true;
+                    break;
+                }
+            }
+            // Pridedame pinigus gavėjui
+            for (auto& user : Users) {
+                if (user.getPublic_key() == tx.getReceiverKey()) {
+                    user.setBal(user.getBal() + tx.getAmount());
+                    receiver_found = true;
+                    break;
+                }
+            }
+            if (!sender_found || !receiver_found) cout << "Balance update error for a transaction!" << endl;
+        }
+        cout << "Balances updated." << endl;
+
         pendingTransactions.clear();
     }
 
@@ -176,4 +217,13 @@ class BlockChain{
             block.printBlock();
         }
     }
+
+    void printBalances() const {
+        cout << "\n--- User Balances ---" << endl;
+        for (const auto& user : Users) {
+            cout << user.getName() << ": " << fixed << setprecision(2) << user.getBal() << " coins" << endl;
+        }
+        cout << "---------------------\n" << endl;
+    }
+
 };
