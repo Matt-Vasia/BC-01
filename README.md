@@ -1,3 +1,37 @@
+# BC-01 v0.1 — Supaprastinta blokų grandinė (pagal slides.pdf)
+
+Šis failas aprašo v0.1 užduotį ir kaip naudotis programa.
+
+## Tikslas (v0.1)
+
+- Turėti paprastą maišos funkciją tekstui („custom hash“ — `SqrtToString`).
+- Sugeneruoti vartotojus su viešais raktų atvaizdais (naudojant `SqrtToString`).
+- Sugeneruoti atsitiktines transakcijas tarp vartotojų.
+- Paruošti bazę blokui su ankstesnio bloko hash, merkle šaknimi, nonce ir difficulty (minavimas kaip procesas yra paruoštas, tačiau blokų klasė dar neužbaigta — žr. „Žinomos spragos“).
+- Atlikti bazinius hash eksperimentus (efektyvumas, lavinos efektas, kolizijų paieška).
+
+## Projekto struktūra (aktualu v0.1)
+
+- `Functions.cpp` — custom hash (`SqrtToString`) ir pagalbinės funkcijos:
+  - `Convert_to_ASCII`, `SqrtToString`
+  - `create_users`, `trans_generator`
+  - `run_hash_experiments`, `ReadFromFile`, `UIfunc`
+- `LIB.h` — bendros deklaracijos.
+- `test_files/` — testo duomenys (pvz., `konstitucija.txt`, kiti failai).
+- `block.cpp`, `block.h` — blokų/operacijų struktūros.
+
+## Kaip sukompiliuoti ir paleisti
+
+## Custom hash (SqrtToString) eksperimentai (v0.1)
+
+Šiuo metu `Functions.cpp` turi visą logiką ir CLI funkcijas, tačiau nėra dedikuoto `main()` į ją iškviesti. Yra du greiti pasirinkimai:
+
+- g++ -g  main.cpp -o  main.exe
+
+- ./main.exe
+
+- Sekti nurodymus konsolėje
+
 # Blokų Grandinės Projektas BC-01
 
 C++ programa, skirta generuoti unikalų hash kodą iš teksto arba failo. Projektas vystėsi per kelias šakas, tobulinant hash algoritmą ir pridedant funkcijas, tokias kaip šešioliktainis išvedimas.
@@ -86,19 +120,3 @@ Funkcija testuojama paleidžiant kiekvieną testą 10 kartų ir apskaičiuojant 
 | Atsitiktinis Failas (3KB)  | `random3000_1.txt`    | `5d4b63dad6b6df7`       | `~0.0000450`         |
 | Panašus Failas (3KB) | `random3000_similar_1.txt` | `a8930d077ed4eed`    | `~0.0000465`         |
 | Didelis Failas (35KB) | `konstitucija.txt`       | `10abc7c55a6c6e0`       | `~0.0002800`         |
-
-## Palyginimas su GeminiHash-256
-
-| Charakteristika | Custom Hash (SqrtToString) | GeminiHash-256 | Laimėtojas |
-|----------------|---------------------------|----------------|------------|
-| **Išvedimo dydis** | 15 hex simbolių (~60 bitų) | 64 hex simboliai (256 bitų) | GeminiHash-256 |
-| **Kolizijų atsparumas** | 0/10,000 (puiku) | 0/10,000 (puiku) | Lygūs |
-| **Lavinos efektas** | 46.88% (puiku) | ~49-50% (idealus) | GeminiHash-256 |
-| **Algoritmo sudėtingumas** | Paprastas (sqrt + hex) | Sudėtingas (SHA-256 tipo) | Custom Hash |
-| **Kriptografinė stiprybė** | Vidutinė | Stipri | GeminiHash-256 |
-| **Našumas** | Labai greitas | Greitas | Custom Hash |
-| **Originalumas** | Unikalus sprendimas | SHA-256 adaptacija | Custom Hash |
-
-### Išvados:
-- **Custom Hash**: Paprastesnis, greitesnis, unikalus, bet trumpesnis išvedimas
-- **GeminiHash-256**: Stipresnis kriptografiškai, standartinis 256-bitų išvedimas
