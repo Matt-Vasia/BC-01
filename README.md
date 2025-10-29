@@ -1,4 +1,4 @@
-# BC-01 v0.1 — Supaprastinta blokų grandinė (pagal slides.pdf)
+# BC-01 v0.1 — Supaprastinta blokų grandinė
 
 Šis failas aprašo v0.1 užduotį ir kaip naudotis programa.
 
@@ -22,24 +22,22 @@
 
 ## Kaip sukompiliuoti ir paleisti
 
-## Custom hash (SqrtToString) eksperimentai (v0.1)
+## Naudojimas
 
-Šiuo metu `Functions.cpp` turi visą logiką ir CLI funkcijas, tačiau nėra dedikuoto `main()` į ją iškviesti. Yra du greiti pasirinkimai:
-
-- g++ -g  main.cpp -o  main.exe
-
-- ./main.exe
-
-- Sekti nurodymus konsolėje
+1.  **Kompiliavimas:**
+    ```bash
+    - g++ -g  main.cpp -o  main.exe
+    ```
+2.  **Paleidimas:**
+    ```bash
+    - ./main.exe
+    ```
+3.  **Paleidimas:**
+    - Sekti nurodymus konsolėje
 
 # Blokų Grandinės Projektas BC-01
 
 C++ programa, skirta generuoti unikalų hash kodą iš teksto arba failo. Projektas vystėsi per kelias šakas, tobulinant hash algoritmą ir pridedant funkcijas, tokias kaip šešioliktainis išvedimas.
-
-## Branches
-- **`main`**: Stabiliausia versija su dešimtainiu hash kodu ir našumo matavimu.
-- **`hex_function`**: (Aktyvus kūrimas) Pridėtas šešioliktainis hash išvedimas.
-- **`V0.2`**: Ankstesnis projekto etapas.
 
 ## Naudojimas
 
