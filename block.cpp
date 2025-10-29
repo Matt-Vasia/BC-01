@@ -17,7 +17,7 @@ public:
     string getPublic_key() const { return public_key; }
     double getBal() const { return balance; }
 
-    void setBal(double bal) { balance = bal; } // gal reiktu idet logika, kad nebutu galima manipuliuot.
+    void setBal(double bal) { balance = bal; }
     void setName(string newName) { name = newName; }
     void setPublic_key(double key) { public_key = key; }
 };

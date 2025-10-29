@@ -47,8 +47,6 @@ string SqrtToString(const string input)
 {
     long int inputInAscii = Convert_to_ASCII(input);
 
-        // inputInAscii = (inputInAscii % 1048576) ^ (inputInAscii >> 10);
-
     long double sqrtOfInputInAscii = sqrt(inputInAscii);
     if (sqrtOfInputInAscii == static_cast<int>(sqrtOfInputInAscii))
         inputInAscii += 1;
@@ -62,8 +60,8 @@ string SqrtToString(const string input)
     string answer = "";
     if (decimalPos != string::npos)
     {
-        string decimalPart = sqrtAsString.substr(decimalPos + 1, 18); // 18 skaitmenu, nes long long priima max 19 skaitmenu
-        long long decimalAsNumber = stoll(decimalPart);               // string to long long
+        string decimalPart = sqrtAsString.substr(decimalPos + 1, 18);
+        long long decimalAsNumber = stoll(decimalPart);
         ostringstream hexOss;
         hexOss << std::hex << std::setw(2) << std::setfill('0') << std::uppercase
        << static_cast<int>(decimalAsNumber);
@@ -462,8 +460,6 @@ void create_users()
 
         User newUser(newName, newKey, newBal);
         Users.push_back(newUser);
-    //     cout << Users[i].getName() << " ";
-    //     cout << Users[i].getBal() << endl;
     }
 }
 
@@ -498,10 +494,6 @@ void trans_generator()
         Transaction trans = Transaction(sender_key, receiver_key, sum);
         Txs.push_back(trans);
         
-        // cout << "Transaction " << (i+1) << " created: " 
-        //      << Users[sender_index].getName() << " -> " 
-        //      << Users[receiver_index].getName() << " : " 
-        //      << fixed << setprecision(2) << sum << endl;
     }
     
     cout << "Total transactions created: " << Txs.size() << endl << endl;
@@ -521,17 +513,6 @@ void mineBlock() {
     int difficulty = 3;
 
     Block newBlock(previousHash, Txs, difficulty);
-    
-    // cout << "Block created with " << Txs.size() << " transactions" << endl;
-    // cout << "Previous Hash: " << newBlock.getPreviousHash() << endl;
-    // cout << "Merkle Root: " << newBlock.getMerkleRoot() << endl;
-    // cout << "Difficulty: " << newBlock.getDifficulty() << endl;
-    // cout << "Timestamp: " << newBlock.getTimestamp() << endl;
-    //  cout << "Testing hash function with modulo fix..." << endl;
-    // for(int i = 0; i < 10; i++) {
-    //     string testHash = SqrtToString("test" + to_string(i));
-    //     cout << "Test hash " << i << ": " << testHash << endl;
-    // }
 
     // Start mining
     newBlock.mineBlock();
