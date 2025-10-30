@@ -21,6 +21,23 @@
 - `test_files/` — testo duomenys (pvz., `konstitucija.txt`, kiti failai).
 - `block.cpp`, `block.h` — blokų/operacijų struktūros.
 
+## Programos veikimas (v0.1 galutinė versija)
+
+- **Inicializacija:** Programa sugeneruoja nurodytą skaičių vartotojų, kiekvienam priskirdama unikalų viešąjį raktą (hash) ir pradinį balansą.
+- **Transakcijų kūrimas:** Atsitiktinai generuojamos transakcijos tarp vartotojų, kurios patalpinamos į laukiančiųjų transakcijų sąrašą.
+- **Bloko formavimas:** Iš laukiančiųjų sąrašo surenkamos transakcijos ir suformuojamas naujas bloko kandidatas.
+- **Bloko kasimas (Proof-of-Work):**
+    - Vykdomas „kasimas“ ieškant tinkamo `nonce` (atsitiktinio skaičiaus), kuris, pridėtas prie bloko duomenų, sugeneruotų hash, atitinkantį sudėtingumo reikalavimą (pvz. prasidedantį nurodytu nulių skaičiumi).
+    - Šis procesas reikalauja skaičiavimo resursų ir laiko.
+- **Bloko pridėjimas:** Radus tinkamą hash, blokas laikomas „iškastu“. Jis pridedamas prie blokų grandinės, o jame esančios transakcijos patvirtinamos.
+- **Ciklo kartojimas:** Procesas kartojamas iki kol nelieka neįtrauktų transakcijų, formuojant ir kasinėjant naujus blokus.
+
+## DI naudojimas projekte.
+
+- **Užduoties aiškinimas:** Visos blokų grandinių sampratos aiškinimas ir praktinis pritaikymas.
+- **Panaudojimas:** Pasitelkta DI pagalba kuriant, tobulinant naudojamas programos funkcijas(nuosavos hašavimo funkcijos tobulinimas siekant išgauti `0` reikšmes pradžioje hašo).
+
+
 ## Kaip sukompiliuoti ir paleisti
 
 ## Naudojimas

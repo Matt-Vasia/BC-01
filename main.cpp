@@ -5,7 +5,7 @@ using namespace std;
 
 
 int main() {
-    BlockChain myChain(2);
+    BlockChain myChain(3);
 
     create_users();
     trans_generator();
@@ -36,12 +36,6 @@ int main() {
         for(const auto& tx : transactionsForBlock) {
             myChain.addTransaction(tx);
         }
-    
-
-    // for(const auto& tx : Txs) {
-    //     myChain.addTransaction(tx);
-    // }
-    // Txs.clear();
 
     myChain.minePending();
     myChain.printBalances();
