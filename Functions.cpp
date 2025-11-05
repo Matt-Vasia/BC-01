@@ -456,9 +456,9 @@ void create_users()
     {
         newName = "User" + to_string(i+1);
         newKey = SqrtToString(newName);
-        newBal = d(rng);
+        // newBal = d(rng);
 
-        User newUser(newName, newKey, newBal);
+        User newUser(newName, newKey);
         Users.push_back(newUser);
     }
 }
