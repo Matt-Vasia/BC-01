@@ -96,9 +96,11 @@ private:
 
     public:
 
-         void mineBlock(){
+         bool mineBlock(){
 
             string dif(difficulty, '0');
+
+            auto start = chrono::high_resolution_clock::now();
 
             nonce = 0;
             hash = calculateHash();
@@ -108,14 +110,13 @@ private:
                 hash = calculateHash();
 
                 if (nonce > 30000000) {
-            cout << "Mining taking too long - hash function may not produce leading zeros!" << endl;
-            break;
-        }
+                    cout << "Mining taking too long - hash function may not produce leading zeros!" << endl;
+                    return false;
+                }
+                if(chrono::high_resolution_clock::now() - start > chrono::seconds(5))
+                    return false;
             }
-
-            cout << "--- BLOKAS ISKASTAS! ---" << endl;
-            cout << "Hash: " << hash << endl;
-            cout << "Nonce: " << nonce << endl;
+            return true;
         }
 
         void printBlock() const {
@@ -163,38 +164,63 @@ class BlockChain{
         cout << "Genesis block created!" << endl << endl;
     }
 
-    Block getLastBlock(){
+    const Block& getLastBlock() const {
         return chain.back();
     }
 
-    void addTransaction(const Transaction& trans){
-          bool senderFound = false;
+    bool addTransaction(const Transaction& trans){
+        // Validate sender exists and has sufficient available balance
+        User* sender = nullptr;
         for (auto& user : Users) {
             if (user.getPublic_key() == trans.getSenderKey()) {
-                senderFound = true;
-                if (user.getBal() < trans.getAmount()) {
-                    cout << "Transaction failed: " << user.getName() << " has insufficient funds." << endl << endl;
-                    return; // Neleidžiame pridėti transakcijos
-                }
+                sender = &user;
                 break;
             }
         }
-        if (!senderFound) {
+        if (!sender) {
             cout << "Transaction failed: Sender with key " << trans.getSenderKey() << " not found." << endl << endl;
-            return;
+            return false;
+        }
+
+        // Validate receiver exists
+        bool receiverFound = false;
+        for (auto& user : Users) {
+            if (user.getPublic_key() == trans.getReceiverKey()) {
+                receiverFound = true;
+                break;
+            }
+        }
+        if (!receiverFound) {
+            cout << "Transaction failed: Receiver with key " << trans.getReceiverKey() << " not found." << endl << endl;
+            return false;
+        }
+
+        // Calculate sender's already-reserved amount in current pending transactions
+        double reserved = 0.0;
+        for (const auto& tx : pendingTransactions) {
+            if (tx.getSenderKey() == trans.getSenderKey()) reserved += tx.getAmount();
+        }
+        const double available = sender->getBal() - reserved;
+        if (trans.getAmount() > available) {
+            cout << "Transaction failed: " << sender->getName() << " has insufficient funds (available "
+                 << fixed << setprecision(2) << available << ")." << endl << endl;
+            return false;
         }
 
         pendingTransactions.push_back(trans);
+        return true;
     }
 
-    void minePending(){
+    bool minePending(){
         if(pendingTransactions.empty()){
             cout << "There are none pending transactions.\n";
-            return;
+            return false;
         }
 
         Block newBlock(getLastBlock().getHash(), pendingTransactions, difficulty);
-        newBlock.mineBlock();
+
+        if(!newBlock.mineBlock())
+            return false;
 
         chain.push_back(newBlock);
 
@@ -224,6 +250,7 @@ class BlockChain{
         cout << "Balances updated." << endl;
 
         pendingTransactions.clear();
+        return true;
     }
 
     void printChain() const {
