@@ -268,21 +268,71 @@ class BlockChain{
         return true;
     }
 
+    Transaction createTransaction(const string& senderKey, const string& receiverKey, double amount){
+        cout << "Creating transaction: " << senderKey << " --> " << receiverKey << " (" << amount << ") " << endl;
+
+        vector<TransactionInput> inputs_for_tx;
+        double full_sum = 0.0;
+
+        for (const auto& pair : allUTXO) {
+            const TransactionOutput& utxo = pair.second;
+            if (utxo.IsSpent(senderKey)) {
+                full_sum += utxo.value;
+                
+                TransactionInput newIn(utxo.id);
+                newIn.unspentOutput = utxo; // Prisegam pačią "monetą"
+                inputs_for_tx.push_back(newIn);
+                
+                if (full_sum >= amount) {
+                    break; // Surinkome pakankamai
+                }
+            }
+        }
+
+        if(full_sum < amount){
+            cout << "Failed. Insufficient funds." << endl << endl;
+            return Transaction(); //grazina tuscia transakcija
+        }
+
+        vector<TransactionOutput> outputForTx;
+
+        outputForTx.push_back(TransactionOutput(receiverKey, amount, "temp", 0)); // cia sukuriamas pirmas coinas
+        
+        double change = full_sum - amount;  // graza siuntejui
+        if(change > 0.01) { // patikra, kad neliktu dust coinu
+            outputForTx.push_back(TransactionOutput(receiverKey, change, "temp",1));
+        }
+        return Transaction(inputs_for_tx, outputForTx);
+    }
+
     bool minePending(){
         if(pendingTransactions.empty()){
             cout << "There are none pending transactions.\n";
             return false;
         }
 
-        Block newBlock(getLastBlock().getHash(), pendingTransactions, difficulty);
+        double miningReward = 100;
 
-        if(!newBlock.mineBlock())
-            return false;
+        TransactionOutput rewardOut("kaseju adresas", miningReward, "TEMP", 0);
+
+        vector<TransactionOutput> rewardOutputs;
+        rewardOutputs.push_back(rewardOut);
+        Transaction coinbaseTx(vector<TransactionInput>(), rewardOutputs);
+
+        vector<Transaction> transactionsForBlock;
+        transactionsForBlock.push_back(coinbaseTx); 
+        transactionsForBlock.insert(transactionsForBlock.end(), pendingTransactions.begin(), pendingTransactions.end());
+
+        Block newBlock(getLastBlock().getHash(), transactionsForBlock, difficulty);
+
+        cout << "Mining new block..." << endl;
+        newBlock.mineBlock();
 
         chain.push_back(newBlock);
 
         // Atnaujiname UTXO sąrašą
-        cout << "Updating UTXO set..." << endl;
+        cout << "Updating UTXO..." << endl;
+
         for (const auto& tx : pendingTransactions) {
             // Pašaliname "išleistas" monetas (inputs)
             for (const auto& in : tx.input) {
@@ -293,7 +343,7 @@ class BlockChain{
                 allUTXO[out.id] = out;
             }
         }
-        cout << "UTXO set updated." << endl;
+        cout << "UTXO updated." << endl;
 
         pendingTransactions.clear();
         return true;
@@ -305,18 +355,13 @@ class BlockChain{
         }
     }
 
-    void printBalances() const {
-        cout << "\n--- User Balances (from UTXOs) ---" << endl;
-        // Pastaba: Tikroje UTXO sistemoje, mes iteruotume per visus vartotojus ir
-        // apskaičiuotume jų balansą iš UTXO rinkinio.
-        // Tam reikia, kad globalus 'Users' sąrašas būtų pasiekiamas čia.
-        // Kol kas ši funkcija paliekama kaip pavyzdys, kur vyktų balanso skaičiavimas.
-        /*
-        for (const auto& user : Users) {
-            cout << user.getName() << ": " << fixed << setprecision(2) << user.getBalanse(allUTXO) << " coins" << endl;
+    void printBalances(const vector<User>& users) const {
+        cout << "\n--- User Balances (Calculated from UTXO) ---" << endl;
+        for (const auto& user : users) {
+            cout << user.getName() << ": " << fixed << setprecision(2) 
+                 << user.getBalanse(allUTXO) << " coins" << endl;
         }
-        */
-        cout << "--------------------------------------\n" << endl;
+        cout << "---------------------------------------------\n" << endl;
     }
 
 };
