@@ -32,10 +32,59 @@
 - **Bloko pridėjimas:** Radus tinkamą hash, blokas laikomas „iškastu“. Jis pridedamas prie blokų grandinės, o jame esančios transakcijos patvirtinamos.
 - **Ciklo kartojimas:** Procesas kartojamas iki kol nelieka neįtrauktų transakcijų, formuojant ir kasinėjant naujus blokus.
 
+## Programos veikimas (v0.2 — UTXO Modelis)
+
+v0.2 versijoje programa buvo iš esmės perrašyta, pereinant nuo paprasto balanso modelio prie **UTXO (Unspent Transaction Output)** modelio, kuris yra artimesnis Bitcoin blokų grandinių veikimo principui.
+
+### Kas yra UTXO?
+
+Vietoj to, kad kiekvienas vartotojas turėtų vieną balanso laukelį, sistema dabar veikia su „monetomis“ (`TransactionOutput`). Kiekviena transakcija sunaudoja senas monetas (įvestys) ir sukuria naujas (išvestys). Vartotojo balansas yra visų jam priklausančių, bet dar neišleistų monetų (UTXO) suma.
+
+### Pagrindiniai pokyčiai ir naujos funkcijos
+
+1.  **Struktūrų atnaujinimas (`LIB.h`):**
+    *   **`TransactionOutput`:** Dabar tai yra pagrindinis vertės vienetas – „moneta“. Ji turi unikalų ID, vertę (`value`) ir savininko adresą (`receiverPublicKey`).
+    *   **`TransactionInput`:** Atstovauja išleidžiamai monetai. Ji nurodo į konkretaus UTXO ID, kuris bus sunaudotas.
+
+2.  **`BlockChain` klasės patobulinimai (`block.cpp`):**
+    *   **`allUTXO` žemėlapis (map):** `BlockChain` klasėje atsirado `map<string, TransactionOutput> allUTXO`. Tai yra svarbiausia duomenų struktūra – pagrindinė knyga, kurioje saugomos **visos** šiuo metu egzistuojančios ir išleidžiamos monetos (UTXO).
+    *   **`BlockChain` konstruktorius:** Dabar jis atsakingas už **Genesis bloko** sukūrimą. Šis blokas turi specialią „Coinbase“ transakciją, kuri „sukuria“ pradines monetas ir paskirsto jas visiems vartotojams, įrašydama jas į `allUTXO` sąrašą.
+    *   **`createTransaction` metodas:** Tai naujas, esminis metodas, kuris valdo lėšų išleidimą:
+        1.  **Lėšų paieška:** Skenuoja `allUTXO` sąrašą, ieškodamas monetų, priklausančių siuntėjui.
+        2.  **Įvesčių surinkimas:** Surenka pakankamai siuntėjo monetų, kad padengtų siunčiamą sumą. Šios monetos tampa transakcijos įvestimis (`inputs`).
+        3.  **Nepakankamų lėšų patikra:** Jei siuntėjas neturi pakankamai lėšų, transakcija atmetama.
+        4.  **Išvesčių sukūrimas:** Sukuria naujas monetas (`outputs`): vieną gavėjui (su siunčiama suma) ir kitą siuntėjui (grąža, jei buvo išleista didesnė moneta nei siunčiama suma).
+    *   **`minePending` metodas:** Atnaujintas kasimo procesas:
+        1.  **Bloko surinkimas:** Paima pateiktą transakcijų paketą (iki 100 transakcijų).
+        2.  **Kasimas:** Atlieka *Proof-of-Work*.
+        3.  **UTXO atnaujinimas:** Sėkmingai iškasus bloką, įvykdo svarbiausią operaciją:
+            *   **Sunaikina** senas monetas (transakcijų įvestis) – pašalina jas iš `allUTXO`.
+            *   **Sukuria** naujas monetas (transakcijų išvestis) – įrašo jas į `allUTXO`.
+
+3.  **Vartotojo balanso skaičiavimas (`User::getBalance`):**
+    *   Balansas nebėra saugomas kintamajame. Kiekvieną kartą, kai reikia sužinoti balansą, funkcija skenuoja **visą `allUTXO` sąrašą** ir susumuoja visas vartotojui priklausančias monetas.
+
+4.  **Merkle Medžio Šaknies (Merkle Root) skaičiavimas (`Block::calculateMerkleRoot`):**
+    *   v0.2 versijoje buvo implementuotas pilnavertis Merkle medžio šaknies skaičiavimas, kuris efektyviai ir saugiai apibendrina visas bloke esančias transakcijas į vieną maišos (hash) reikšmę.
+    *   **Veikimo principas:**
+        1.  **Pradinis sluoksnis:** Pirmiausia, surenkami visų bloke esančių transakcijų ID (`transactionID`). Tai yra medžio „lapai“.
+        2.  **Poravimas ir maišymas:** Cikle imamos gretimos maišos reikšmės poromis (`left` ir `right`), sujungiamos į vieną eilutę ir iš naujo maišomos (`hash(left + right)`), taip suformuojant naują, aukštesnį medžio sluoksnį.
+        3.  **Nelyginio skaičiaus atvejis:** Jei sluoksnyje yra nelyginis maišos reikšmių skaičius, paskutinė reikšmė yra suporuojama pati su savimi (`hash(last + last)`).
+        4.  **Kartojimas:** Procesas kartojamas – naujai gautas sluoksnis vėl poruojamas ir maišomas, kol galiausiai lieka tik viena maišos reikšmė.
+        5.  **Galutinis rezultatas:** Ši paskutinė reikšmė ir yra **Merkle šaknis (Merkle Root)**. Ji įrašoma į bloko antraštę ir tampa neatsiejama bloko maišos skaičiavimo dalimi, užtikrinant, kad pakeitus bent vieną transakciją, pasikeistų ir Merkle šaknis, o kartu ir viso bloko maišos reikšmė.
+
+
+### Programos eiga (v0.2)
+
+1.  **Inicializacija:** Sukuriami vartotojai. Sukuriama `BlockChain` su **Genesis bloku**, kuris kiekvienam vartotojui suteikia pradinį kapitalą (pvz., 1000 monetų) įrašant juos į `allUTXO`.
+2.  **Transakcijų generavimas:** `trans_generator` funkcija, naudodama `createTransaction` metodą, sukuria didelį kiekį **validžių** transakcijų, patikrindama siuntėjų lėšas.
+3.  **Kasimas paketais:** `main` funkcija ima po 100 transakcijų ir perduoda jas `minePending` metodui, kuris suformuoja ir iškasa naują bloką.
+4.  **Grandinės augimas:** Iškastas blokas pridedamas prie grandinės, `allUTXO` sąrašas atnaujinamas, ir procesas kartojamas, kol visos transakcijos yra įtraukiamos į grandinę.
+
 ## DI naudojimas projekte.
 
 - **Užduoties aiškinimas:** Visos blokų grandinių sampratos aiškinimas ir praktinis pritaikymas.
-- **Panaudojimas:** Pasitelkta DI pagalba kuriant, tobulinant naudojamas programos funkcijas(nuosavos hašavimo funkcijos tobulinimas siekant išgauti `0` reikšmes pradžioje hašo).
+- **Panaudojimas:** Pasitelkta DI pagalba kuriant, tobulinant naudojamas programos funkcijas(nuosavos hašavimo funkcijos tobulinimas siekant išgauti `0` reikšmes pradžioje hašo), UTXO modelio praktinis įgyvendinimas.
 
 
 ## Kaip sukompiliuoti ir paleisti
