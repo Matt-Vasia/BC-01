@@ -20,6 +20,31 @@
 
 using namespace std;
 
+struct TransactionOutput{
+    string id; // monetos ID
+    string receiverPublicKey; // kam priklauso
+    double value; // monetos verte
+    bool Spent = false;
+
+    TransactionOutput() : value(0.0) {}
+
+    TransactionOutput(string receiver, double bal, string txID, int index) 
+    : receiverPublicKey(receiver), value(bal) {
+        id = SqrtToString(txID+to_string(index));
+    }
+
+    bool IsSpent(const string& publicKey) const{
+        return receiverPublicKey == publicKey;
+    }
+};
+
+struct TransactionInput{
+    string outputID;
+    TransactionOutput unspentOutput;
+
+    TransactionInput(string outId) : outputID(outId) {}
+};
+
 class User;
 
 class Transaction;

@@ -438,7 +438,7 @@ void UIfunc()
 
 void create_users()
 {
-    static std::mt19937 rng{std::random_device{}()};         // kazka cia turetu reikst, kad random.. klausti DI.
+    static std::mt19937 rng{static_cast<unsigned int>(std::chrono::high_resolution_clock::now().time_since_epoch().count())};
     std::uniform_real_distribution<double> d(10.0, 10000.0); // nusato nuo 10 iki 10000 random skaiciu
 
     Users.clear();
