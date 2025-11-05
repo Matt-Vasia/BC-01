@@ -209,7 +209,7 @@ class BlockChain{
     map<string, TransactionOutput> allUTXO; // string yra TransactionOutut id
 
     public:
-    BlockChain(int diff=3, const vector<User>& initialUsers, double initialBalance) : difficulty(diff){
+    BlockChain(int diff, const vector<User>& initialUsers, double initialBalance) : difficulty(diff){
        
         cout << "Creating Genesis block..." << endl;
 
@@ -300,7 +300,7 @@ class BlockChain{
         
         double change = full_sum - amount;  // graza siuntejui
         if(change > 0.01) { // patikra, kad neliktu dust coinu
-            outputForTx.push_back(TransactionOutput(receiverKey, change, "temp",1));
+            outputForTx.push_back(TransactionOutput(senderKey, change, "temp",1));
         }
         return Transaction(inputs_for_tx, outputForTx);
     }

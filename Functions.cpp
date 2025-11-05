@@ -1,8 +1,6 @@
 #include "LIB.h"
 #include "block.cpp"
 
-vector<Transaction> Txs;
-
 vector<User> Users;
 
 long int Convert_to_ASCII(string str)
@@ -463,7 +461,7 @@ void create_users()
     }
 }
 
-void trans_generator()
+void trans_generator(BlockChain& blockchain)
 {
     if(Users.empty()) {
         cout << "No users available! Please create users first (option 4)." << endl;
@@ -479,6 +477,7 @@ void trans_generator()
     cout << "choose the number of transactions: ";
     cin >> count;
 
+    int successful_transactions = 0;
     for (size_t i = 0; i < count; i++)
     {
         int sender_index = user_dist(rng);
@@ -491,38 +490,44 @@ void trans_generator()
         string sender_key = Users[sender_index].getPublic_key();
         string receiver_key = Users[receiver_index].getPublic_key();
 
-        Transaction trans = Transaction(sender_key, receiver_key, sum);
-        Txs.push_back(trans);
+        // Kuriame transakciją per BlockChain metodą, kuris valdo UTXO
+        Transaction newTrans = blockchain.createTransaction(sender_key, receiver_key, sum);
+
+        // Pridedame transakciją į laukiančiųjų sąrašą, jei ji sėkmingai sukurta
+        if (!newTrans.transactionID.empty()) {
+            blockchain.addTransaction(newTrans);
+            successful_transactions++;
+        }
         
     }
     
-    cout << "Total transactions created: " << Txs.size() << endl << endl;
+    cout << "Total transactions created: " << successful_transactions << endl << endl;
 }
 
-void mineBlock() {
-    if(Txs.empty()) {
-        cout << "No transactions available to mine! Please create transactions first." << endl;
-        return;
-    }
+// void mineBlock() {
+//     if(Txs.empty()) {
+//         cout << "No transactions available to mine! Please create transactions first." << endl;
+//         return;
+//     }
     
-    cout << "Starting mining process..." << endl;
-    cout << "Number of transactions to include: " << Txs.size() << endl;
+//     cout << "Starting mining process..." << endl;
+//     cout << "Number of transactions to include: " << Txs.size() << endl;
     
-    string previousHash = "0000000000000000000000000000000000000000000000000000000000000000"; // Genesis block 
+//     string previousHash = "0000000000000000000000000000000000000000000000000000000000000000"; // Genesis block 
 
-    int difficulty = 3;
+//     int difficulty = 3;
 
-    Block newBlock(previousHash, Txs, difficulty);
+//     Block newBlock(previousHash, Txs, difficulty);
 
-    // Start mining
-    newBlock.mineBlock();
+//     // Start mining
+//     newBlock.mineBlock();
     
-    cout << "\n=== BLOCK SUCCESSFULLY MINED ===" << endl;
-    cout << "Final Hash: " << newBlock.getHash() << endl;
-    cout << "Final Nonce: " << newBlock.getNonce() << endl;
-    cout << "Transactions included: " << newBlock.getTransactions().size() << endl;
+//     cout << "\n=== BLOCK SUCCESSFULLY MINED ===" << endl;
+//     cout << "Final Hash: " << newBlock.getHash() << endl;
+//     cout << "Final Nonce: " << newBlock.getNonce() << endl;
+//     cout << "Transactions included: " << newBlock.getTransactions().size() << endl;
     
-    // Clear transactions after mining
-    Txs.clear();
-    cout << "Transactions cleared. Ready for new block." << endl;
-}
+//     // Clear transactions after mining
+//     Txs.clear();
+//     cout << "Transactions cleared. Ready for new block." << endl;
+// }

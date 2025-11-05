@@ -1,75 +1,46 @@
-// #include "LIB.h"
 #include "Functions.cpp"
 
 using namespace std;
 
-
 int main() {
-    BlockChain myChain(3);
+    srand(time(0)); // Inicializuojame atsitiktinių skaičių generatorių
 
+    // 1. Sukuriame vartotojus
     create_users();
-    trans_generator();
+    if (Users.empty()) {
+        cout << "No users created. Exiting." << endl;
+        return 1;
+    }
 
+    // 2. Inicializuojame grandinę, duodami kiekvienam vartotojui pradinį balansą per Genesis bloką
+    BlockChain myChain(3, Users, 1000.0);
     myChain.printBalances(Users);
 
-    
+    // 3. Sugeneruojame transakcijas, kurios iškart patenka į myChain.pendingTransactions
+    trans_generator(myChain);
+
     int blockCount = 1;
-    // 6. Kartojame procesą, kol yra neįtrauktų transakcijų
-    while (!Txs.empty()) {
+    // 4. Kartojame procesą, kol yra neįtrauktų transakcijų
+    while (!myChain.pendingTransactions.empty()) {
         cout << "\n=========================================" << endl;
         cout << "Preparing to mine Block #" << blockCount++ << endl;
-        cout << Txs.size() << " transactions remaining." << endl;
+        cout << myChain.pendingTransactions.size() << " transactions remaining in pending pool." << endl;
 
-        int transactionsToMine = min((int)Txs.size(), 100);
-        
-        vector<Transaction> transactionsForBlock;
-        for (int i = 0; i < transactionsToMine; ++i) {
-            transactionsForBlock.push_back(Txs.back());
-            Txs.pop_back(); // Pašaliname transakciją iš pagrindinio sąrašo
-        }
-
-        cout << "Adding " << transactionsForBlock.size() << " transactions to the new block." << endl;
-        // Try to add; if rejected, immediately requeue so nothing disappears
-        vector<Transaction> acceptedForBlock;
-        int successfulTransactions = 0;
-        for (const auto& tx : transactionsForBlock) {
-            if (myChain.addTransaction(tx)) {
-                acceptedForBlock.push_back(tx);
-                successfulTransactions++;
-            }
-        }
-
-        if (acceptedForBlock.empty()) {
-            cout << "No valid transactions for this block. Stopping to avoid infinite loop." << endl;
-            break;
-        }
-        else
-            cout << "Number of transactions added to block: " << successfulTransactions << endl << endl;
-
-        if(!myChain.minePending())
-        {
-            blockCount--;
-            size_t cnt = 0;
-            // Return only the accepted ones (rejected were already requeued)
-            while (!acceptedForBlock.empty()) {
-                if (cnt % 2 == 0)
-                    Txs.push_back(acceptedForBlock.back());
-                else
-                    Txs.insert(Txs.begin(), acceptedForBlock.back());
-                acceptedForBlock.pop_back();
-                ++cnt;
-            }
-        }
-        else
+        // Kasame bloką su visomis laukiančiomis transakcijomis.
+        // minePending() metodas pats pasirūpina visomis pendingTransactions.
+        if (myChain.minePending()) {
+            cout << "Block successfully mined." << endl;
             myChain.printBalances(Users);
+        } else {
+            cout << "Mining failed. There might be no valid transactions to mine." << endl;
+            break; // Saugiklis, kad išvengtume amžino ciklo
+        }
     }
 
     cout << "\n=========================================" << endl;
     cout << "All transactions have been processed." << endl;
 
-
-    cout << "\n--- Blockchain content ---" << endl;
+    cout << "\n--- Final Blockchain content ---" << endl;
     myChain.printChain();
     return 0;
 }
-

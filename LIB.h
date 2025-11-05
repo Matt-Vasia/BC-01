@@ -1,4 +1,3 @@
-
 #ifndef LIB_H
 #define LIB_H
 
@@ -19,6 +18,10 @@
 #include <algorithm>
 
 using namespace std;
+
+// Function declarations moved to the top
+long int Convert_to_ASCII(string str);
+string SqrtToString(const string input);
 
 struct TransactionOutput{
     string id; // monetos ID
@@ -52,20 +55,16 @@ class Transaction;
 class BlockChain;
 
 extern vector<User> Users;
-extern vector<Transaction> Txs;
-
-long int Convert_to_ASCII(string str);
+// extern vector<Transaction> Txs;
 
 void ReadFromFile();
-
-string SqrtToString(const string input);
 
 void UIfunc();
 
 void create_users();
 
-void trans_generator();
+void trans_generator(BlockChain& blockchain);
 
-void mineBlock();
+// void mineBlock();
 
 #endif
