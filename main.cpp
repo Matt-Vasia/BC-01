@@ -36,10 +36,7 @@ int main() {
             if (myChain.addTransaction(tx)) {
                 acceptedForBlock.push_back(tx);
                 successfulTransactions++;
-            }/* else {
-                // Put back to the pool (front) to avoid starvation of older txs
-                Txs.insert(Txs.begin(), tx);
-            }*/
+            }
         }
 
         if (acceptedForBlock.empty()) {

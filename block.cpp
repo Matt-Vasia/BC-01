@@ -203,7 +203,7 @@ class BlockChain{
         const double available = sender->getBal() - reserved;
         if (trans.getAmount() > available) {
             cout << "Transaction failed: " << sender->getName() << " has insufficient funds (available "
-                 << fixed << setprecision(2) << available << ")." << endl << endl;
+                 << fixed << setprecision(2) << available << ", needed " << trans.getAmount() << ")." << endl << endl;
             return false;
         }
 
