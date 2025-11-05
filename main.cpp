@@ -41,10 +41,15 @@ int main() {
             cout << "Block successfully mined." << endl;
             myChain.printBalances(Users);
         } else {
-            cout << "Mining failed for this batch." << endl;
-            // Grąžiname transakcijas atgal į sąrašą, jei kasimas nepavyko
-            allGeneratedTransactions.insert(allGeneratedTransactions.end(), transactionsForThisBlock.begin(), transactionsForThisBlock.end());
-            break;
+            int index = 0;
+            for(Transaction tx: transactionsForThisBlock)
+            {
+                if(index % 2 ==0)
+                    allGeneratedTransactions.push_back(tx);
+                else
+                    allGeneratedTransactions.insert(allGeneratedTransactions.begin(), tx);
+                ++index;
+            }
         }
     }
 

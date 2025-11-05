@@ -327,11 +327,7 @@ class BlockChain{
         blockTransactions.push_back(coinbaseTx);
         blockTransactions.insert(blockTransactions.end(), transactionsToMine.begin(), transactionsToMine.end());
 
-        vector<Transaction> transactionsForBlock;
-        transactionsForBlock.push_back(coinbaseTx); 
-        transactionsForBlock.insert(transactionsForBlock.end(), pendingTransactions.begin(), pendingTransactions.end());
-
-        Block newBlock(getLastBlock().getHash(), transactionsForBlock, difficulty);
+        Block newBlock(getLastBlock().getHash(), blockTransactions, difficulty);
 
         cout << "Mining new block..." << endl;
         if (!newBlock.mineBlock()) {
