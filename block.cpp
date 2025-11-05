@@ -5,19 +5,30 @@ class User
 private:
     string name;
     string public_key;
-    double balance;
 
 public:
-    User(const string &n, const string &key, double bal)
-        : name(n), public_key(key), balance(bal)
+    User(const string &n, const string &key)
+        : name(n), public_key(key)
     {
+    }
+
+    double getBalanse(const map<string, TransactionOutput>& allUTXOs) const // grazina visu naudotojo UTXO suma.
+    {
+        double sum=0.0;
+        
+        for (auto && pair : allUTXOs)
+        {
+            if(pair.second.IsSpent(public_key))
+            {
+                sum+=pair.second.value;
+            }
+        }
+        return sum;
     }
 
     string getName() const { return name; }
     string getPublic_key() const { return public_key; }
-    double getBal() const { return balance; }
 
-    void setBal(double bal) { balance = bal; }
     void setName(string newName) { name = newName; }
     void setPublic_key(const string &key) { public_key = key; }
 };
