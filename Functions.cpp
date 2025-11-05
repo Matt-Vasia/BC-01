@@ -454,7 +454,6 @@ void create_users()
     {
         newName = "User" + to_string(i+1);
         newKey = SqrtToString(newName);
-        // newBal = d(rng);
 
         User newUser(newName, newKey);
         Users.push_back(newUser);
@@ -470,7 +469,7 @@ void trans_generator(BlockChain& blockchain, vector<Transaction>& out_transactio
     
     static std::mt19937 rng{std::random_device{}()};
     std::uniform_int_distribution<int> user_dist(0, Users.size() - 1);
-    std::uniform_real_distribution<double> amount_dist(10.0, 1000.0);
+    std::uniform_real_distribution<double> amount_dist(10.0, 1400.0);
 
     int count = 0;
 
