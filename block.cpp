@@ -165,13 +165,20 @@ private:
                     cout << "Mining taking too long - hash function may not produce leading zeros!" << endl;
                     return false;
                 }
-                if(chrono::high_resolution_clock::now() - start > chrono::seconds(5))
+                if(chrono::high_resolution_clock::now() - start > chrono::seconds(50))
                     return false;
             }
             return true;
         }
 
         void printBlock() const {
+            char time_buf[26];
+            // localtime grąžina statinį pointerį, todėl rezultatą reikia panaudoti iškart
+            tm* timeinfo = localtime(&timestamp);
+            
+            // Formatuojame laiką į standartinį string'ą
+            strftime(time_buf, sizeof(time_buf), "%c", timeinfo);
+
             cout << endl << "Previous Hash: " << getPreviousHash() << endl;
             cout << "Timestamp: " << ctime(&timestamp);
             cout << "Merkle Root: " << getMerkleRoot() << endl;
@@ -217,9 +224,10 @@ class BlockChain{
         vector<TransactionInput> genesisInputs; // Tuscias
         vector<TransactionOutput> genesisOutputs;
 
+        int index = 0;
         for (const auto& user : initialUsers) {
             // Kiekvienam vartotojui sukuriame po viena pradini coina
-            TransactionOutput initialCoin(user.getPublic_key(), initialBalance, "GENESIS_TX", 0); // monetos konstruktorius
+            TransactionOutput initialCoin(user.getPublic_key(), initialBalance, "GENESIS_TX", index++); // monetos konstruktorius
             
             allUTXO[initialCoin.id] = initialCoin;
             genesisOutputs.push_back(initialCoin);
@@ -305,19 +313,19 @@ class BlockChain{
         return Transaction(inputs_for_tx, outputForTx);
     }
 
-    bool minePending(){
-        if(pendingTransactions.empty()){
-            cout << "There are none pending transactions.\n";
+    bool minePending(const vector<Transaction>& transactionsToMine){
+        if (transactionsToMine.empty()) {
+            cout << "No transactions provided to mine." << endl;
             return false;
         }
 
         double miningReward = 100;
 
-        TransactionOutput rewardOut("kaseju adresas", miningReward, "TEMP", 0);
+        Transaction coinbaseTx(vector<TransactionInput>(), {TransactionOutput("miner-reward-address", miningReward, "COINBASE", 0)});
 
-        vector<TransactionOutput> rewardOutputs;
-        rewardOutputs.push_back(rewardOut);
-        Transaction coinbaseTx(vector<TransactionInput>(), rewardOutputs);
+        vector<Transaction> blockTransactions;
+        blockTransactions.push_back(coinbaseTx);
+        blockTransactions.insert(blockTransactions.end(), transactionsToMine.begin(), transactionsToMine.end());
 
         vector<Transaction> transactionsForBlock;
         transactionsForBlock.push_back(coinbaseTx); 
@@ -326,26 +334,30 @@ class BlockChain{
         Block newBlock(getLastBlock().getHash(), transactionsForBlock, difficulty);
 
         cout << "Mining new block..." << endl;
-        newBlock.mineBlock();
+        if (!newBlock.mineBlock()) {
+            cout << "Mining failed!" << endl;
+            return false;
+        }
 
         chain.push_back(newBlock);
 
-        // Atnaujiname UTXO sąrašą
+        // Atnaujiname UTXO sąrašą pagal ĮTRAUKTAS transakcijas
         cout << "Updating UTXO..." << endl;
-
-        for (const auto& tx : pendingTransactions) {
-            // Pašaliname "išleistas" monetas (inputs)
+        // Atnaujiname Coinbase transakciją
+        for (const auto& out : coinbaseTx.output) {
+            allUTXO[out.id] = out;
+        }
+        // Atnaujiname kitas transakcijas
+        for (const auto& tx : transactionsToMine) {
             for (const auto& in : tx.input) {
                 allUTXO.erase(in.outputID);
             }
-            // Pridedame naujas "neišleistas" monetas (outputs)
             for (const auto& out : tx.output) {
                 allUTXO[out.id] = out;
             }
         }
         cout << "UTXO updated." << endl;
 
-        pendingTransactions.clear();
         return true;
     }
 

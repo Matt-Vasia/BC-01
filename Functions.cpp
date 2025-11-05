@@ -461,7 +461,7 @@ void create_users()
     }
 }
 
-void trans_generator(BlockChain& blockchain)
+void trans_generator(BlockChain& blockchain, vector<Transaction>& out_transactions)
 {
     if(Users.empty()) {
         cout << "No users available! Please create users first (option 4)." << endl;
@@ -495,7 +495,7 @@ void trans_generator(BlockChain& blockchain)
 
         // Pridedame transakciją į laukiančiųjų sąrašą, jei ji sėkmingai sukurta
         if (!newTrans.transactionID.empty()) {
-            blockchain.addTransaction(newTrans);
+            out_transactions.push_back(newTrans);
             successful_transactions++;
         }
         

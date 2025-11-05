@@ -3,7 +3,7 @@
 using namespace std;
 
 int main() {
-    srand(time(0)); // Inicializuojame atsitiktinių skaičių generatorių
+    srand(time(0));
 
     // 1. Sukuriame vartotojus
     create_users();
@@ -12,28 +12,39 @@ int main() {
         return 1;
     }
 
-    // 2. Inicializuojame grandinę, duodami kiekvienam vartotojui pradinį balansą per Genesis bloką
+    // 2. Inicializuojame grandinę, duodami kiekvienam vartotojui pradinį balansą
     BlockChain myChain(3, Users, 1000.0);
     myChain.printBalances(Users);
 
-    // 3. Sugeneruojame transakcijas, kurios iškart patenka į myChain.pendingTransactions
-    trans_generator(myChain);
+    // 3. Sugeneruojame didelį kiekį transakcijų, bet JŲ NEPRIDEDAME į pendingTransactions.
+    // Vietoj to, mes jas valdysime rankiniu būdu.
+    vector<Transaction> allGeneratedTransactions;
+    trans_generator(myChain, allGeneratedTransactions); // Pakeista funkcija, kad grąžintų transakcijas
 
     int blockCount = 1;
     // 4. Kartojame procesą, kol yra neįtrauktų transakcijų
-    while (!myChain.pendingTransactions.empty()) {
+    while (!allGeneratedTransactions.empty()) {
         cout << "\n=========================================" << endl;
         cout << "Preparing to mine Block #" << blockCount++ << endl;
-        cout << myChain.pendingTransactions.size() << " transactions remaining in pending pool." << endl;
+        cout << allGeneratedTransactions.size() << " transactions remaining in total." << endl;
 
-        // Kasame bloką su visomis laukiančiomis transakcijomis.
-        // minePending() metodas pats pasirūpina visomis pendingTransactions.
-        if (myChain.minePending()) {
+        // Paimame iki 100 transakcijų iš sąrašo galo
+        int batchSize = min((int)allGeneratedTransactions.size(), 100);
+        vector<Transaction> transactionsForThisBlock;
+        for(int i = 0; i < batchSize; ++i) {
+            transactionsForThisBlock.push_back(allGeneratedTransactions.back());
+            allGeneratedTransactions.pop_back();
+        }
+
+        // Kasame bloką su konkrečia transakcijų partija
+        if (myChain.minePending(transactionsForThisBlock)) {
             cout << "Block successfully mined." << endl;
             myChain.printBalances(Users);
         } else {
-            cout << "Mining failed. There might be no valid transactions to mine." << endl;
-            break; // Saugiklis, kad išvengtume amžino ciklo
+            cout << "Mining failed for this batch." << endl;
+            // Grąžiname transakcijas atgal į sąrašą, jei kasimas nepavyko
+            allGeneratedTransactions.insert(allGeneratedTransactions.end(), transactionsForThisBlock.begin(), transactionsForThisBlock.end());
+            break;
         }
     }
 

@@ -63,7 +63,7 @@ void UIfunc();
 
 void create_users();
 
-void trans_generator(BlockChain& blockchain);
+void trans_generator(BlockChain& blockchain, vector<Transaction>& out_transactions);
 
 // void mineBlock();
 
