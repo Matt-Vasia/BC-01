@@ -35,24 +35,65 @@ public:
 
 class Transaction
 {
+    public:
+
     string transactionID;
-    string senderKey;
-    string receiverKey;
-    double amount;
+    vector <TransactionOutput> output;
+    vector <TransactionInput> input;
+
+    private:
+    string calculateHash(){
+        string temp="";
+        for (auto &&in : input)
+        {
+            temp+=in.outputID;
+        }
+
+        for (auto &&out : output)
+        {
+            temp+=to_string(out.value)+out.receiverPublicKey;
+        }
+        
+        return SqrtToString(temp);
+    }
 
 public:
-    Transaction(const string &sendKey, const string &recKey, double total)
-        : senderKey(sendKey), receiverKey(recKey), amount(total)
+    Transaction(const vector<TransactionInput>& in, const vector<TransactionOutput>& out)
+    : output(out), input(in)
     {
-        string transHash = sendKey + recKey + to_string(total);
-        transactionID = SqrtToString(transHash);
+        transactionID = calculateHash();
+
+        for(size_t i = 0; i < this->output.size(); ++i) {
+            this->output[i].id = SqrtToString(transactionID + to_string(i));
+        }
+    }
+
+    Transaction() {}
+
+    double getInputValue() const 
+    {
+        double sum=0.0;
+
+        for (auto &&in : input)
+        {
+            sum+=in.unspentOutput.value;
+        }
+        return sum;
+    }
+
+    double getOutputValue() const 
+    {
+        double sum=0.0;
+
+        for (auto &&out : output)
+        {
+            sum+=out.value;
+        }
+        return sum;
     }
 
     // getters
     string getTransactionID() const { return transactionID; }
-    string getSenderKey() const { return senderKey; }
-    string getReceiverKey() const { return receiverKey; }
-    double getAmount() const { return amount; }
 };
 
 class Block
