@@ -12,7 +12,7 @@ public:
     {
     }
 
-    double getBalanse(const map<string, TransactionOutput>& allUTXOs) const // grazina visu naudotojo UTXO suma.
+    double getBalance(const map<string, TransactionOutput>& allUTXOs) const // grazina visu naudotojo UTXO suma.
     {
         double sum=0.0;
         
@@ -359,7 +359,7 @@ class BlockChain{
         cout << "\n--- User Balances (Calculated from UTXO) ---" << endl;
         for (const auto& user : users) {
             cout << user.getName() << ": " << fixed << setprecision(2) 
-                 << user.getBalanse(allUTXO) << " coins" << endl;
+                 << user.getBalance(allUTXO) << " coins" << endl;
         }
         cout << "---------------------------------------------\n" << endl;
     }

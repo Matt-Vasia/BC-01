@@ -10,7 +10,7 @@ int main() {
     create_users();
     trans_generator();
 
-    myChain.printBalances();
+    myChain.printBalances(Users);
 
     
     int blockCount = 1;
@@ -61,7 +61,7 @@ int main() {
             }
         }
         else
-            myChain.printBalances();
+            myChain.printBalances(Users);
     }
 
     cout << "\n=========================================" << endl;
