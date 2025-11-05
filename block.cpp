@@ -206,60 +206,65 @@ class BlockChain{
     vector<Block> chain;
     vector<Transaction> pendingTransactions;
     int difficulty;
+    map<string, TransactionOutput> allUTXO; // string yra TransactionOutut id
 
     public:
-    BlockChain(int diff=3) : difficulty(diff){
+    BlockChain(int diff=3, const vector<User>& initialUsers, double initialBalance) : difficulty(diff){
        
-        Block genesisblock("0", vector<Transaction>(), difficulty);
-        genesisblock.mineBlock();
-        chain.push_back(genesisblock);
-        cout << "Genesis block created!" << endl << endl;
+        cout << "Creating Genesis block..." << endl;
+
+        // Coinbase sistema 
+        vector<TransactionInput> genesisInputs; // Tuscias
+        vector<TransactionOutput> genesisOutputs;
+
+        for (const auto& user : initialUsers) {
+            // Kiekvienam vartotojui sukuriame po viena pradini coina
+            TransactionOutput initialCoin(user.getPublic_key(), initialBalance, "GENESIS_TX", 0); // monetos konstruktorius
+            
+            allUTXO[initialCoin.id] = initialCoin;
+            genesisOutputs.push_back(initialCoin);
+        }
+
+    Transaction genesisTransaction(genesisInputs,genesisOutputs);
+
+    vector<Transaction> genesisBlockTransactions;
+    genesisBlockTransactions.push_back(genesisTransaction);
+
+    Block genesisBlock("0", genesisBlockTransactions, difficulty);
+    genesisBlock.mineBlock();
+    chain.push_back(genesisBlock);
+    
+    cout << "Genesis block created with starting coins" << endl << endl;
     }
 
-    const Block& getLastBlock() const {
+    Block getLastBlock(){
         return chain.back();
     }
 
+    bool validateTransaction(const Transaction& trans)const {
+        for (auto &&in : trans.input) // tikrina ar egzistuoja tokios monetos ir ar nera isleistos
+        {
+            if(allUTXO.count(in.outputID)==0){
+                cout << "Error: Input " << in.outputID << " doesnt exist."<< endl;
+                return false;
+            }
+        }
+        
+        if(trans.getInputValue() < trans.getOutputValue()){
+            cout << "Validation Error: Inputs value (" << trans.getInputValue() 
+                 << ") is less than outputs value (" << trans.getOutputValue() << ")" << endl;
+                 return false;
+        }
+        return true;
+    }
+
     bool addTransaction(const Transaction& trans){
-        // Validate sender exists and has sufficient available balance
-        User* sender = nullptr;
-        for (auto& user : Users) {
-            if (user.getPublic_key() == trans.getSenderKey()) {
-                sender = &user;
-                break;
-            }
-        }
-        if (!sender) {
-            cout << "Transaction failed: Sender with key " << trans.getSenderKey() << " not found." << endl << endl;
+        if(validateTransaction(trans) == false){
+            cout << "Transaction validation failed." << endl << endl;
             return false;
         }
-
-        // Validate receiver exists
-        bool receiverFound = false;
-        for (auto& user : Users) {
-            if (user.getPublic_key() == trans.getReceiverKey()) {
-                receiverFound = true;
-                break;
-            }
-        }
-        if (!receiverFound) {
-            cout << "Transaction failed: Receiver with key " << trans.getReceiverKey() << " not found." << endl << endl;
-            return false;
-        }
-
-        // Calculate sender's already-reserved amount in current pending transactions
-        double reserved = 0.0;
-        for (const auto& tx : pendingTransactions) {
-            if (tx.getSenderKey() == trans.getSenderKey()) reserved += tx.getAmount();
-        }
-        const double available = sender->getBal() - reserved;
-        if (trans.getAmount() > available) {
-            cout << "Transaction failed: " << sender->getName() << " has insufficient funds (available "
-                 << fixed << setprecision(2) << available << ", needed " << trans.getAmount() << ")." << endl << endl;
-            return false;
-        }
-
         pendingTransactions.push_back(trans);
+        cout << "Transaction valid." << endl << endl;
         return true;
     }
 
@@ -276,30 +281,19 @@ class BlockChain{
 
         chain.push_back(newBlock);
 
-         // 5. Atnaujiname vartotojų balansus
-        cout << "Updating user balances..." << endl;
+        // Atnaujiname UTXO sąrašą
+        cout << "Updating UTXO set..." << endl;
         for (const auto& tx : pendingTransactions) {
-            bool sender_found = false;
-            bool receiver_found = false;
-            // Atimame pinigus iš siuntėjo
-            for (auto& user : Users) {
-                if (user.getPublic_key() == tx.getSenderKey()) {
-                    user.setBal(user.getBal() - tx.getAmount());
-                    sender_found = true;
-                    break;
-                }
+            // Pašaliname "išleistas" monetas (inputs)
+            for (const auto& in : tx.input) {
+                allUTXO.erase(in.outputID);
             }
-            // Pridedame pinigus gavėjui
-            for (auto& user : Users) {
-                if (user.getPublic_key() == tx.getReceiverKey()) {
-                    user.setBal(user.getBal() + tx.getAmount());
-                    receiver_found = true;
-                    break;
-                }
+            // Pridedame naujas "neišleistas" monetas (outputs)
+            for (const auto& out : tx.output) {
+                allUTXO[out.id] = out;
             }
-            if (!sender_found || !receiver_found) cout << "Balance update error for a transaction!" << endl;
         }
-        cout << "Balances updated." << endl;
+        cout << "UTXO set updated." << endl;
 
         pendingTransactions.clear();
         return true;
@@ -312,11 +306,17 @@ class BlockChain{
     }
 
     void printBalances() const {
-        cout << "\n--- User Balances ---" << endl;
+        cout << "\n--- User Balances (from UTXOs) ---" << endl;
+        // Pastaba: Tikroje UTXO sistemoje, mes iteruotume per visus vartotojus ir
+        // apskaičiuotume jų balansą iš UTXO rinkinio.
+        // Tam reikia, kad globalus 'Users' sąrašas būtų pasiekiamas čia.
+        // Kol kas ši funkcija paliekama kaip pavyzdys, kur vyktų balanso skaičiavimas.
+        /*
         for (const auto& user : Users) {
-            cout << user.getName() << ": " << fixed << setprecision(2) << user.getBal() << " coins" << endl;
+            cout << user.getName() << ": " << fixed << setprecision(2) << user.getBalanse(allUTXO) << " coins" << endl;
         }
-        cout << "---------------------\n" << endl;
+        */
+        cout << "--------------------------------------\n" << endl;
     }
 
 };
