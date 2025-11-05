@@ -19,7 +19,7 @@ public:
 
     void setBal(double bal) { balance = bal; }
     void setName(string newName) { name = newName; }
-    void setPublic_key(double key) { public_key = key; }
+    void setPublic_key(const string &key) { public_key = key; }
 };
 
 class Transaction
@@ -71,13 +71,27 @@ private:
     string calculateMerkleRoot()
     {
         if (transactions.empty())
-            return "empty block";
+            return SqrtToString("");
 
-        string hash = "";
+        vector<string> layer;
+        layer.reserve(transactions.size());
+        for (const auto &tx : transactions)
+            layer.push_back(tx.getTransactionID());
 
-        for (auto &&i : transactions)
-            hash += i.getTransactionID();
-        return SqrtToString(hash);
+        while (layer.size() > 1)
+        {
+            vector<string> next;
+            next.reserve((layer.size() + 1) / 2);
+            for (size_t i = 0; i < layer.size(); i += 2)
+            {
+                const string &left = layer[i];
+                const string &right = (i + 1 < layer.size()) ? layer[i + 1] : layer[i];
+
+                next.push_back(SqrtToString(left + right));
+            }
+            layer.swap(next);
+        }
+        return layer[0];
     }
 
     public:
