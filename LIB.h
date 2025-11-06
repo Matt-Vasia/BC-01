@@ -19,7 +19,6 @@
 
 using namespace std;
 
-// Function declarations moved to the top
 long int Convert_to_ASCII(string str);
 string SqrtToString(const string input);
 
@@ -42,7 +41,7 @@ struct TransactionOutput{
 };
 
 struct TransactionInput{
-    string outputID;
+    string outputID; // monetos ID
     TransactionOutput unspentOutput;
 
     TransactionInput(string outId) : outputID(outId) {}
@@ -55,7 +54,6 @@ class Transaction;
 class BlockChain;
 
 extern vector<User> Users;
-// extern vector<Transaction> Txs;
 
 void ReadFromFile();
 
@@ -64,7 +62,5 @@ void UIfunc();
 void create_users();
 
 void trans_generator(BlockChain& blockchain, vector<Transaction>& out_transactions);
-
-// void mineBlock();
 
 #endif

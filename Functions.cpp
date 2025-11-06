@@ -448,7 +448,6 @@ void create_users()
 
     string newName = "";
     string newKey = "";
-    double newBal = 0;
 
     for (size_t i = 0; i < count; i++)
     {
@@ -469,7 +468,7 @@ void trans_generator(BlockChain& blockchain, vector<Transaction>& out_transactio
     
     static std::mt19937 rng{std::random_device{}()};
     std::uniform_int_distribution<int> user_dist(0, Users.size() - 1);
-    std::uniform_real_distribution<double> amount_dist(10.0, 1400.0);
+    std::uniform_real_distribution<double> amount_dist(10.0, 1400.0); // kadangi sukuria kiekviena useri su 1000 coinu, tai padaryta 1400, kad butu failed transakciju
 
     int count = 0;
 
@@ -502,31 +501,3 @@ void trans_generator(BlockChain& blockchain, vector<Transaction>& out_transactio
     
     cout << "Total transactions created: " << successful_transactions << endl << endl;
 }
-
-// void mineBlock() {
-//     if(Txs.empty()) {
-//         cout << "No transactions available to mine! Please create transactions first." << endl;
-//         return;
-//     }
-    
-//     cout << "Starting mining process..." << endl;
-//     cout << "Number of transactions to include: " << Txs.size() << endl;
-    
-//     string previousHash = "0000000000000000000000000000000000000000000000000000000000000000"; // Genesis block 
-
-//     int difficulty = 3;
-
-//     Block newBlock(previousHash, Txs, difficulty);
-
-//     // Start mining
-//     newBlock.mineBlock();
-    
-//     cout << "\n=== BLOCK SUCCESSFULLY MINED ===" << endl;
-//     cout << "Final Hash: " << newBlock.getHash() << endl;
-//     cout << "Final Nonce: " << newBlock.getNonce() << endl;
-//     cout << "Transactions included: " << newBlock.getTransactions().size() << endl;
-    
-//     // Clear transactions after mining
-//     Txs.clear();
-//     cout << "Transactions cleared. Ready for new block." << endl;
-// }

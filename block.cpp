@@ -221,7 +221,7 @@ class BlockChain{
         cout << "Creating Genesis block..." << endl;
 
         // Coinbase sistema 
-        vector<TransactionInput> genesisInputs; // Tuscias
+        vector<TransactionInput> genesisInputs;
         vector<TransactionOutput> genesisOutputs;
 
         int index = 0;
