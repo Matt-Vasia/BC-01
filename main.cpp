@@ -13,7 +13,7 @@ int main() {
     }
 
     // 2. Inicializuojame grandinę, duodami kiekvienam vartotojui pradinį balansą
-    BlockChain myChain(3, Users, 1000.0);
+    BlockChain myChain(4, Users, 1000.0);
     myChain.printBalances(Users);
 
     // 3. Sugeneruojame didelį kiekį transakcijų, bet JŲ NEPRIDEDAME į pendingTransactions.
@@ -25,7 +25,7 @@ int main() {
     // 4. Kartojame procesą, kol yra neįtrauktų transakcijų
     while (!allGeneratedTransactions.empty()) {
         cout << "\n=========================================" << endl;
-        cout << "Preparing to mine Block #" << blockCount++ << endl;
+        cout << "Preparing to mine Block #" << blockCount << endl;
         cout << allGeneratedTransactions.size() << " transactions remaining in total." << endl;
 
         // Paimame iki 100 transakcijų iš sąrašo galo
@@ -40,6 +40,7 @@ int main() {
         if (myChain.minePending(transactionsForThisBlock)) {
             cout << "Block successfully mined." << endl;
             myChain.printBalances(Users);
+            blockCount++;
         } else {
             int index = 0;
             for(Transaction tx: transactionsForThisBlock)
