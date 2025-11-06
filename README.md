@@ -1,8 +1,8 @@
-# BC-01 v0.1 — Supaprastinta blokų grandinė
+# BC-01 — Supaprastinta blokų grandinė
 
-Šis failas aprašo v0.1 užduotį ir kaip naudotis programa.
+Šis failas aprašo užduotį ir kaip naudotis programa.
 
-## Tikslas (v0.1)
+## Tikslas (v2)
 
 - Turėti paprastą maišos funkciją tekstui („custom hash“ — `SqrtToString`).
 - Sugeneruoti vartotojus su viešais raktų atvaizdais (naudojant `SqrtToString`).
@@ -11,7 +11,7 @@
 - Iškastų blokų įtraukimas į blokų grandinę
 - Vartotojo sąsajos sukūrimas
 
-## Projekto struktūra (aktualu v0.1)
+## Projekto struktūra
 
 - `Functions.cpp` — custom hash (`SqrtToString`) ir pagalbinės funkcijos:
   - `Convert_to_ASCII`, `SqrtToString`
@@ -21,7 +21,7 @@
 - `test_files/` — testo duomenys (pvz., `konstitucija.txt`, kiti failai).
 - `block.cpp`, `block.h` — blokų/operacijų struktūros.
 
-## Programos veikimas (v0.1 galutinė versija)
+## Programos veikimas (v2.1 versija)
 
 - **Inicializacija:** Programa sugeneruoja nurodytą skaičių vartotojų, kiekvienam priskirdama unikalų viešąjį raktą (hash) ir pradinį balansą.
 - **Transakcijų kūrimas:** Atsitiktinai generuojamos transakcijos tarp vartotojų, kurios patalpinamos į laukiančiųjų transakcijų sąrašą.
@@ -32,7 +32,7 @@
 - **Bloko pridėjimas:** Radus tinkamą hash, blokas laikomas „iškastu“. Jis pridedamas prie blokų grandinės, o jame esančios transakcijos patvirtinamos.
 - **Ciklo kartojimas:** Procesas kartojamas iki kol nelieka neįtrauktų transakcijų, formuojant ir kasinėjant naujus blokus.
 
-## Programos veikimas (v0.2 — UTXO Modelis)
+## Programos veikimas (v2.2 versija — UTXO Modelis)
 
 v0.2 versijoje programa buvo iš esmės perrašyta, pereinant nuo paprasto balanso modelio prie **UTXO (Unspent Transaction Output)** modelio, kuris yra artimesnis Bitcoin blokų grandinių veikimo principui.
 
@@ -74,7 +74,7 @@ Vietoj to, kad kiekvienas vartotojas turėtų vieną balanso laukelį, sistema d
         5.  **Galutinis rezultatas:** Ši paskutinė reikšmė ir yra **Merkle šaknis (Merkle Root)**. Ji įrašoma į bloko antraštę ir tampa neatsiejama bloko maišos skaičiavimo dalimi, užtikrinant, kad pakeitus bent vieną transakciją, pasikeistų ir Merkle šaknis, o kartu ir viso bloko maišos reikšmė.
 
 
-### Programos eiga (v0.2)
+### Programos eiga (v2.2)
 
 1.  **Inicializacija:** Sukuriami vartotojai. Sukuriama `BlockChain` su **Genesis bloku**, kuris kiekvienam vartotojui suteikia pradinį kapitalą (pvz., 1000 monetų) įrašant juos į `allUTXO`.
 2.  **Transakcijų generavimas:** `trans_generator` funkcija, naudodama `createTransaction` metodą, sukuria didelį kiekį **validžių** transakcijų, patikrindama siuntėjų lėšas.
@@ -86,8 +86,6 @@ Vietoj to, kad kiekvienas vartotojas turėtų vieną balanso laukelį, sistema d
 - **Užduoties aiškinimas:** Visos blokų grandinių sampratos aiškinimas ir praktinis pritaikymas.
 - **Panaudojimas:** Pasitelkta DI pagalba kuriant, tobulinant naudojamas programos funkcijas(nuosavos hašavimo funkcijos tobulinimas siekant išgauti `0` reikšmes pradžioje hašo), UTXO modelio praktinis įgyvendinimas.
 
-
-## Kaip sukompiliuoti ir paleisti
 
 ## Naudojimas
 
@@ -101,21 +99,6 @@ Vietoj to, kad kiekvienas vartotojas turėtų vieną balanso laukelį, sistema d
     ```
 3.  **Paleidimas:**
     - Sekti nurodymus konsolėje
-
-# Blokų Grandinės Projektas BC-01
-
-C++ programa, skirta generuoti unikalų hash kodą iš teksto arba failo. Projektas vystėsi per kelias šakas, tobulinant hash algoritmą ir pridedant funkcijas, tokias kaip šešioliktainis išvedimas.
-
-## Naudojimas
-
-1.  **Kompiliavimas:**
-    ```bash
-    g++ -g main.cpp Functions.cpp -o main.exe
-    ```
-2.  **Paleidimas:**
-    ```bash
-    ./main.exe
-    ```
 
 ## Reikalavimų atitikimas
 
