@@ -165,7 +165,7 @@ private:
                     cout << "Mining taking too long - hash function may not produce leading zeros!" << endl;
                     return false;
                 }
-                if(chrono::high_resolution_clock::now() - start > chrono::seconds(50))
+                if(chrono::high_resolution_clock::now() - start > chrono::seconds(20))
                     return false;
             }
             return true;
@@ -221,7 +221,7 @@ class BlockChain{
         cout << "Creating Genesis block..." << endl;
 
         // Coinbase sistema 
-        vector<TransactionInput> genesisInputs; // Tuscias
+        vector<TransactionInput> genesisInputs;
         vector<TransactionOutput> genesisOutputs;
 
         int index = 0;

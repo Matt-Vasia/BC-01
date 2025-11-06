@@ -17,7 +17,6 @@ int main() {
     myChain.printBalances(Users);
 
     // 3. Sugeneruojame didelį kiekį transakcijų, bet JŲ NEPRIDEDAME į pendingTransactions.
-    // Vietoj to, mes jas valdysime rankiniu būdu.
     vector<Transaction> allGeneratedTransactions;
     trans_generator(myChain, allGeneratedTransactions); // Pakeista funkcija, kad grąžintų transakcijas
 
